@@ -1,0 +1,162 @@
+import React from "react";
+import { motion } from "motion/react";
+import { Product, CartItem } from "../types";
+
+interface CategoryProductListProps {
+  category: "restaurant" | "drinks" | "room_service";
+  products: Product[];
+  isLoading: boolean;
+  onAddToCart: (product: Product) => void;
+  onBack: () => void;
+  onOpenCart: () => void;
+  cart: CartItem[];
+}
+
+export default function CategoryProductList({
+  category,
+  products,
+  isLoading,
+  onAddToCart,
+  onBack,
+  onOpenCart,
+  cart
+}: CategoryProductListProps) {
+  const totalCartItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+  const categoryNames = {
+    restaurant: "المطعم الملكي الفاخر",
+    drinks: "المشروبات والقهوة المختصة",
+    room_service: "خدمة الجناح المباشرة"
+  };
+
+  const filteredProducts = products.filter(p => p.category === category);
+
+  return (
+    <div className="min-h-screen bg-luxury-bg flex flex-col justify-between overflow-x-hidden relative">
+      {/* Top Header */}
+      <header className="relative z-20 px-6 py-6 border-b border-white/5 bg-luxury-black/40 backdrop-blur-md flex items-center justify-between">
+        {/* Back Button */}
+        <button
+          onClick={onBack}
+          className="text-xs text-gray-400 hover:text-white transition-colors"
+        >
+          الفئات ←
+        </button>
+
+        {/* Title */}
+        <div className="text-center">
+          <h2 className="text-base font-light text-white">{categoryNames[category]}</h2>
+          <p className="text-[9px] text-gold-primary tracking-widest font-sans uppercase">{category}</p>
+        </div>
+
+        {/* Cart Trigger */}
+        <button
+          onClick={onOpenCart}
+          className="text-xs text-gold-primary px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-300 font-medium"
+        >
+          سلة الطلبات
+          {totalCartItems > 0 && (
+            <span className="mr-1.5 font-sans bg-gold-primary text-black px-1.5 py-0.5 rounded text-[10px] font-bold">
+              {totalCartItems}
+            </span>
+          )}
+        </button>
+      </header>
+
+      {/* Grid Content */}
+      <main className="flex-1 w-full max-w-6xl mx-auto px-6 py-10">
+        {isLoading ? (
+          /* Skeletons */
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="glass-panel p-4 rounded-3xl border border-white/5 space-y-4 animate-pulse">
+                <div className="w-full h-48 bg-white/5 rounded-2xl" />
+                <div className="h-4 bg-white/5 rounded w-3/4" />
+                <div className="h-3 bg-white/5 rounded w-1/2" />
+                <div className="flex justify-between items-center pt-2">
+                  <div className="h-5 bg-white/5 rounded w-1/4" />
+                  <div className="h-8 bg-white/5 rounded-xl w-1/3" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : filteredProducts.length === 0 ? (
+          /* Empty State */
+          <div className="text-center py-24 space-y-4">
+            <p className="text-gray-400 font-light">لا توجد منتجات متاحة في هذه الفئة حالياً</p>
+          </div>
+        ) : (
+          /* Products Grid */
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {filteredProducts.map((product, idx) => {
+              const inCartItem = cart.find(item => item.product.id === product.id);
+              const inCartCount = inCartItem ? inCartItem.quantity : 0;
+
+              return (
+                <motion.div
+                  key={product.id}
+                  initial={{ opacity: 0, y: 25 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.08, duration: 0.8, cubicBezier: [0.16, 1, 0.3, 1] }}
+                  whileHover={{ y: -6 }}
+                  className="glass-panel p-4 rounded-[24px] border border-gold-primary/10 hover:border-gold-primary/25 transition-all duration-500 shadow-lg flex flex-col justify-between group overflow-hidden"
+                >
+                  {/* Image container with hover zoom */}
+                  <div className="relative w-full h-48 rounded-2xl overflow-hidden mb-4 bg-black/40">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      loading="lazy"
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-[1.2s] ease-out brightness-90 group-hover:brightness-95"
+                    />
+                    
+                    {/* Golden subtle aura decoration on card image */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-60" />
+                    
+                    {/* Tag badge for in-cart items count */}
+                    {inCartCount > 0 && (
+                      <div className="absolute top-3 left-3 bg-gold-primary text-black text-[9px] font-sans font-bold px-2 py-1 rounded shadow-md">
+                        <span>{inCartCount} في السلة</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Title and descriptions */}
+                  <div className="flex-1 flex flex-col justify-between space-y-3">
+                    <div className="space-y-1">
+                      <h3 className="text-xs font-light text-white group-hover:text-gold-primary transition-colors duration-300">
+                        {product.name}
+                      </h3>
+                      <p className="text-[10px] text-gray-500 font-light leading-relaxed line-clamp-3">
+                        {product.description}
+                      </p>
+                    </div>
+
+                    {/* Pricing & Add Trigger */}
+                    <div className="flex items-center justify-between pt-2">
+                      <span className="text-xs text-gold-primary font-sans font-medium tracking-wide">
+                        {product.price} ر.س
+                      </span>
+                      
+                      <motion.button
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => onAddToCart(product)}
+                        className="btn-gold-outline rounded-xl px-3.5 py-1.5 text-[10px] tracking-wide font-medium"
+                      >
+                        + أضف للسلة
+                      </motion.button>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        )}
+      </main>
+
+      {/* Spacing footer */}
+      <div className="py-6" />
+    </div>
+  );
+}

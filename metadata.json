@@ -1,0 +1,6 @@
+{
+  "name": "Villa Misk - Luxury Guest Portal",
+  "description": "A premium, cinematic digital concierge for guests at Villa Misk, offering boutique services, requests, dining, and rating in elegant Arabic typography.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

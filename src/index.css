@@ -1,0 +1,134 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Alexandria:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "IBM Plex Sans Arabic", "Alexandria", ui-sans-serif, system-ui, sans-serif;
+  
+  --color-gold-primary: #dfba73;
+  --color-gold-secondary: #cbba53;
+  --color-luxury-bg: #080808;
+  --color-luxury-black: #000000;
+  --color-luxury-glass: rgba(255, 255, 255, 0.05);
+  --color-luxury-border: rgba(223, 186, 115, 0.25);
+}
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    background-color: #080808;
+    color: #ffffff;
+    direction: rtl;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+    user-select: none; /* Premium digital concierge feel */
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #000000;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #dfba73;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #cbba53;
+  }
+
+  /* Custom text selection */
+  ::selection {
+    background: rgba(223, 186, 115, 0.2);
+    color: #dfba73;
+  }
+
+  /* Remove default tap highlight for mobile */
+  * {
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+  }
+
+  /* Elegant input focus styling */
+  input:focus, textarea:focus {
+    box-shadow: 0 0 15px rgba(223, 186, 115, 0.15);
+    border-color: #dfba73;
+  }
+}
+
+/* Animations & Special Effects */
+.shimmer-bg {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.03) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Glassmorphism utility */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(223, 186, 115, 0.15);
+}
+
+.glass-panel-hover:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(223, 186, 115, 0.35);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(223, 186, 115, 0.1);
+}
+
+/* Metallic gold gradient button */
+.btn-gold {
+  background: linear-gradient(135deg, #dfba73 0%, #b89146 100%);
+  color: #000000;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid #dfba73;
+}
+
+.btn-gold:hover {
+  background: linear-gradient(135deg, #f0d194 0%, #dfba73 100%);
+  box-shadow: 0 0 25px rgba(223, 186, 115, 0.35);
+}
+
+.btn-gold-outline {
+  background: transparent;
+  color: #dfba73;
+  border: 1px solid rgba(223, 186, 115, 0.4);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-gold-outline:hover {
+  background: rgba(223, 186, 115, 0.08);
+  border-color: #dfba73;
+  box-shadow: 0 0 15px rgba(223, 186, 115, 0.15);
+}
+
+/* Shake animation for errors */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+.animate-shake {
+  animation: shake 0.4s ease-in-out;
+}
