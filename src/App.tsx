@@ -155,6 +155,13 @@ function AppContent() {
     queryFn: () => apiService.getMenu(),
   });
 
+  // Fetch special orders
+  const { data: specialOrders = [], isLoading: isLoadingSpecialOrders } = useQuery({
+    queryKey: ["specialOrders", session?.roomNumber],
+    queryFn: () => apiService.getSpecialOrders(session?.roomNumber || ""),
+    enabled: !!session?.roomNumber,
+  });
+
   // Get active count of pending orders (status starting from قيد الانتظار)
   const activeOrdersCount = orders.filter(o => o.status === "قيد الانتظار" || o.status === "جاري التحضير" || o.status === "جاري التوصيل").length;
 
@@ -468,8 +475,13 @@ function AppContent() {
           >
             <SpecialRequestsView
               categories={requestCategories}
-              specialOffers={offers.map(o => ({ ...o, price: 0 }))}
-              isLoading={isCategoriesLoading}
+              specialOffers={specialOrders.map(o => ({
+                id: o.id,
+                title: o.specialOffer.title,
+                description: o.specialOffer.description,
+                price: o.agreedPrice
+              }))}
+              isLoading={isLoadingSpecialOrders}
               onSubmitRequest={handleSubmitSpecialRequest}
               onBack={() => navigate("#main")}
               existingRequests={specialRequests}
