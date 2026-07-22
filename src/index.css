@@ -33,6 +33,9 @@
   --color-text-muted: #8A8A8A;
   --color-scrollbar-track: #EEEAE4;
   --color-scrollbar-thumb: #C9A35B;
+  --color-success: #3F8C5A;
+  --color-danger: #B64545;
+  --color-card-bg: rgba(255, 255, 255, 0.75);
 }
 
 @layer base {
@@ -65,8 +68,8 @@
 
   /* Custom text selection */
   ::selection {
-    background: rgba(223, 186, 115, 0.2);
-    color: #dfba73;
+    background: rgba(201, 163, 91, 0.2);
+    color: #C9A35B;
   }
 
   /* Remove default tap highlight for mobile */
@@ -77,8 +80,8 @@
 
   /* Elegant input focus styling */
   input:focus, textarea:focus {
-    box-shadow: 0 0 15px rgba(223, 186, 115, 0.15);
-    border-color: #dfba73;
+    box-shadow: 0 0 15px rgba(201, 163, 91, 0.15);
+    border-color: #C9A35B;
   }
 }
 
