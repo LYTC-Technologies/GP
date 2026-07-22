@@ -79,7 +79,7 @@ export default function SpecialRequestsView({
               </div>
 
               <div className="space-y-2">
-                <h3 className="text-xl font-light text-white tracking-wide">
+                <h3 className="text-xl font-light text-primary tracking-wide">
                   تم إرسال طلبك بنجاح
                 </h3>
                 <p className="text-xs text-gray-400 font-light leading-relaxed">
@@ -101,14 +101,14 @@ export default function SpecialRequestsView({
         {/* Back Button */}
         <button
           onClick={selectedCategory ? () => setSelectedCategory(null) : onBack}
-          className="text-xs text-gray-400 hover:text-white transition-colors animate-fade-in"
+          className="text-xs text-gray-400 hover-text-primary transition-colors animate-fade-in"
         >
           {selectedCategory ? "التصنيفات ←" : "الرئيسية ←"}
         </button>
 
         {/* Header Title */}
         <div className="text-center">
-          <h2 className="text-base font-light text-white">
+          <h2 className="text-base font-light text-primary">
             {selectedCategory ? "تفاصيل الطلب الخاص" : "الطلبات الخاصة والخدمات"}
           </h2>
           <p className="text-[9px] text-gold-primary tracking-widest font-sans">SPECIAL SERVICE</p>
@@ -124,7 +124,7 @@ export default function SpecialRequestsView({
           /* View A: Select special request category */
           <div className="space-y-8">
             <div className="text-center max-w-md mx-auto space-y-2">
-              <h3 className="text-lg font-light text-white">كيف يمكننا خدمتك اليوم؟</h3>
+              <h3 className="text-lg font-light text-primary">كيف يمكننا خدمتك اليوم؟</h3>
               <p className="text-xs text-gray-400 font-light">
                 اختر نوع الخدمة التي ترغب بها، وسيتم تلبية طلبك بواسطة المساعد الشخصي ميخائيل
               </p>
@@ -158,7 +158,7 @@ export default function SpecialRequestsView({
                     {/* Title and descriptions */}
                     <div className="flex-1 flex flex-col justify-between space-y-3">
                       <div>
-                        <h3 className="text-sm text-white font-light leading-tight mb-2">
+                        <h3 className="text-sm text-primary font-light leading-tight mb-2">
                           {offer.title}
                         </h3>
                         <p className="text-[10px] text-gray-500 font-light leading-relaxed line-clamp-3">
@@ -204,7 +204,7 @@ export default function SpecialRequestsView({
                   {existingRequests.map((req) => (
                     <div key={req.id} className="p-4 bg-white/[0.01] rounded-xl border border-white/5 flex justify-between items-center text-xs">
                       <div className="space-y-1">
-                        <span className="font-medium text-white block">{req.category}</span>
+                        <span className="font-medium text-primary block">{req.category}</span>
                         <span className="text-[10px] text-gray-500 block leading-relaxed max-w-sm">{req.notes}</span>
                       </div>
                       <div className="text-right space-y-1 shrink-0">
@@ -227,7 +227,7 @@ export default function SpecialRequestsView({
             {/* Header info */}
             <div className="border-b border-white/5 pb-4">
               <span className="text-[9px] text-gold-primary uppercase tracking-[0.2em] font-sans">SERVICE DETAILS</span>
-              <h3 className="text-base text-white font-medium mt-1">{selectedCategory.name}</h3>
+              <h3 className="text-base text-primary font-medium mt-1">{selectedCategory.name}</h3>
               <p className="text-[11px] text-gray-500 mt-1 font-light leading-relaxed">{selectedCategory.description}</p>
             </div>
 
@@ -243,7 +243,7 @@ export default function SpecialRequestsView({
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="يرجى كتابة أية متطلبات خاصة أو توجيهات محددة للمساعد الشخصي هنا..."
-                  className="w-full bg-luxury-black/60 rounded-xl p-4 border border-gold-primary/20 text-xs text-white placeholder-gray-600 focus:outline-none transition-all duration-300"
+                  className="w-full bg-luxury-black/60 rounded-xl p-4 border border-gold-primary/20 text-xs text-primary placeholder-gray-600 focus:outline-none transition-all duration-300"
                 />
               </div>
 

@@ -76,12 +76,12 @@ export default function CartDrawer({
             {/* Header */}
             <div className="p-6 border-b border-white/5 flex items-center justify-between">
               <div>
-                <h3 className="text-base font-light text-white">طلباتي</h3>
+                <h3 className="text-base font-light text-primary">طلباتي</h3>
                 <p className="text-[10px] text-gray-500 tracking-wider">سلة المشتريات ومتابعة الطلبات السابقة</p>
               </div>
               <button
                 onClick={onClose}
-                className="text-xs px-3 py-1.5 hover:bg-white/5 text-gray-400 hover:text-white rounded-lg border border-white/5 transition-colors"
+                className="text-xs px-3 py-1.5 hover:bg-white/5 text-gray-400 hover-text-primary rounded-lg border border-white/5 transition-colors"
               >
                 إغلاق ×
               </button>
@@ -130,7 +130,7 @@ export default function CartDrawer({
 
                             {/* Product details */}
                             <div className="flex-1 min-w-0">
-                              <h4 className="text-xs text-white truncate font-light mb-1">
+                              <h4 className="text-xs text-primary truncate font-light mb-1">
                                 {item.product.name}
                               </h4>
                               <p className="text-[10px] text-gold-primary/80 font-sans tracking-wide">
@@ -141,16 +141,16 @@ export default function CartDrawer({
                               <div className="flex items-center space-x-3 space-x-reverse mt-2">
                                 <button
                                   onClick={() => onUpdateQuantity(item.product.id, -1)}
-                                  className="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors text-xs font-sans"
+                                  className="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-gray-400 hover-text-primary transition-colors text-xs font-sans"
                                 >
                                   -
                                 </button>
-                                <span className="text-xs font-sans text-white w-4 text-center">
+                                <span className="text-xs font-sans text-primary w-4 text-center">
                                   {item.quantity}
                                 </span>
                                 <button
                                   onClick={() => onUpdateQuantity(item.product.id, 1)}
-                                  className="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors text-xs font-sans"
+                                  className="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-gray-400 hover-text-primary transition-colors text-xs font-sans"
                                 >
                                   +
                                 </button>
@@ -281,7 +281,7 @@ export default function CartDrawer({
                                 </div>
 
                                 <div className="space-y-1 border-t border-white/5 pt-2">
-                                  <span className="font-medium text-white block text-[11px]">{req.category}</span>
+                                  <span className="font-medium text-primary block text-[11px]">{req.category}</span>
                                   <p className="text-[10px] text-gray-400 leading-relaxed font-light">{req.notes || "لا توجد ملاحظات إضافية"}</p>
                                 </div>
                               </div>
@@ -309,7 +309,7 @@ export default function CartDrawer({
                   </div>
                   <div className="relative my-2 h-[1px] bg-white/5" />
                   <div className="flex justify-between text-sm">
-                    <span className="text-white font-light">الإجمالي النهائي</span>
+                    <span className="text-primary font-light">الإجمالي النهائي</span>
                     <span className="text-gold-primary font-sans text-base font-semibold">{totalAmount} ر.س</span>
                   </div>
                 </div>

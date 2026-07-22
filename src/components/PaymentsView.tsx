@@ -34,14 +34,14 @@ export default function PaymentsView({ stayDetails, isLoading, orders, onBack, o
         {/* Back Button */}
         <button
           onClick={onBack}
-          className="text-xs text-gray-400 hover:text-white transition-colors"
+          className="text-xs text-gray-400 hover-text-primary transition-colors"
         >
           الرئيسية ←
         </button>
 
         {/* Title */}
         <div className="text-center">
-          <h2 className="text-base font-light text-white">المدفوعات والفواتير</h2>
+          <h2 className="text-base font-light text-primary">المدفوعات والفواتير</h2>
           <p className="text-[9px] text-gold-primary tracking-widest font-sans">PAYMENTS & BILLING</p>
         </div>
 
@@ -66,22 +66,22 @@ export default function PaymentsView({ stayDetails, isLoading, orders, onBack, o
           >
             {/* Stay Information */}
             <div className="space-y-4">
-              <h3 className="text-lg font-light text-white border-b border-white/10 pb-3">
+              <h3 className="text-lg font-light text-primary border-b border-white/10 pb-3">
                 تفاصيل الإقامة
               </h3>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
                   <span className="text-gray-400 block mb-1">تاريخ الوصول:</span>
-                  <span className="text-white">{stayDetails.checkInTime}</span>
+                  <span className="text-primary">{stayDetails.checkInTime}</span>
                 </div>
                 <div>
                   <span className="text-gray-400 block mb-1">تاريخ المغادرة المتوقع:</span>
-                  <span className="text-white">{stayDetails.expectedCheckOutDate}</span>
+                  <span className="text-primary">{stayDetails.expectedCheckOutDate}</span>
                 </div>
                 {stayDetails.checkOutTime && (
                   <div>
                     <span className="text-gray-400 block mb-1">تاريخ المغادرة الفعلي:</span>
-                    <span className="text-white">{stayDetails.checkOutTime}</span>
+                    <span className="text-primary">{stayDetails.checkOutTime}</span>
                   </div>
                 )}
                 <div>
@@ -93,17 +93,17 @@ export default function PaymentsView({ stayDetails, isLoading, orders, onBack, o
 
             {/* Payment Details */}
             <div className="space-y-4">
-              <h3 className="text-lg font-light text-white border-b border-white/10 pb-3">
+              <h3 className="text-lg font-light text-primary border-b border-white/10 pb-3">
                 تفاصيل الفاتورة
               </h3>
               <div className="space-y-4">
                 <div className="flex justify-between items-center py-3 border-b border-white/5">
                   <span className="text-gray-400">مصاريف الغرفة:</span>
-                  <span className="text-white text-lg font-light">{formatPrice(stayDetails.roomCharge)} ر.س</span>
+                  <span className="text-primary text-lg font-light">{formatPrice(stayDetails.roomCharge)} ر.س</span>
                 </div>
                 <div className="flex justify-between items-center py-3 border-b border-white/5">
                   <span className="text-gray-400">الخدمات الإضافية:</span>
-                  <span className="text-white text-lg font-light">{formatPrice(stayDetails.totalCharge - stayDetails.roomCharge)} ر.س</span>
+                  <span className="text-primary text-lg font-light">{formatPrice(stayDetails.totalCharge - stayDetails.roomCharge)} ر.س</span>
                 </div>
                 <div className="flex justify-between items-center py-4 bg-gold-primary/10 rounded-xl px-4">
                   <span className="text-gold-primary font-medium">إجمالي الفاتورة:</span>
@@ -115,7 +115,7 @@ export default function PaymentsView({ stayDetails, isLoading, orders, onBack, o
             {/* Orders Invoice */}
             {orders.length > 0 && (
               <div className="space-y-4">
-                <h3 className="text-lg font-light text-white border-b border-white/10 pb-3">
+                <h3 className="text-lg font-light text-primary border-b border-white/10 pb-3">
                   فاتورة الطلبات
                 </h3>
                 <div className="space-y-3">
@@ -124,7 +124,7 @@ export default function PaymentsView({ stayDetails, isLoading, orders, onBack, o
                       <div className="flex justify-between items-start mb-3">
                         <div>
                           <span className="text-xs text-gray-500 block">رقم الطلب</span>
-                          <span className="text-white font-medium">#{order.id}</span>
+                          <span className="text-primary font-medium">#{order.id}</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <div className="text-right">
@@ -145,7 +145,7 @@ export default function PaymentsView({ stayDetails, isLoading, orders, onBack, o
                         {order.items.map((item, idx) => (
                           <div key={idx} className="flex justify-between items-center text-sm">
                             <span className="text-gray-300">{item.name} x{item.quantity}</span>
-                            <span className="text-white">{formatPrice(item.price * item.quantity)} ر.س</span>
+                            <span className="text-primary">{formatPrice(item.price * item.quantity)} ر.س</span>
                           </div>
                         ))}
                       </div>
@@ -165,7 +165,7 @@ export default function PaymentsView({ stayDetails, isLoading, orders, onBack, o
             {/* Notes */}
             {stayDetails.notes && (
               <div className="space-y-2">
-                <h3 className="text-lg font-light text-white border-b border-white/10 pb-3">
+                <h3 className="text-lg font-light text-primary border-b border-white/10 pb-3">
                   ملاحظات
                 </h3>
                 <p className="text-gray-400 text-sm leading-relaxed">

@@ -41,7 +41,7 @@ export default function PaymentsCard({ stayDetails, isLoading, onClick }: Paymen
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.6 }}
-          className="text-xl md:text-2xl font-light text-white"
+          className="text-xl md:text-2xl font-light text-primary"
         >
           المدفوعات
         </motion.h3>

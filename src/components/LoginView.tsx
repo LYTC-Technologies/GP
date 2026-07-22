@@ -65,7 +65,7 @@ export default function LoginView({ onLoginSuccess }: LoginViewProps) {
 
           {/* Titles */}
           <div className="text-center mb-8">
-            <h2 className="text-2xl md:text-3xl font-light text-white tracking-wide mb-2">
+            <h2 className="text-2xl md:text-3xl font-light text-primary tracking-wide mb-2">
               مرحباً بك
             </h2>
             <p className="text-xs tracking-wider text-gray-400">
@@ -89,7 +89,7 @@ export default function LoginView({ onLoginSuccess }: LoginViewProps) {
                 }}
                 disabled={isLoading}
                 placeholder="مثال: ١٠١"
-                className={`w-full bg-luxury-black/60 rounded-xl px-5 py-4 border text-center font-sans text-xl text-white tracking-[0.1em] placeholder-gray-600 focus:outline-none transition-all duration-300 ${
+                className={`w-full bg-luxury-black/60 rounded-xl px-5 py-4 border text-center font-sans text-xl text-primary tracking-[0.1em] placeholder-gray-600 focus:outline-none transition-all duration-300 ${
                   error ? "border-red-500/40 focus:border-red-500/60" : "border-gold-primary/25 focus:border-gold-primary"
                 }`}
                 autoComplete="off"

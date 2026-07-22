@@ -165,7 +165,7 @@ export default function MainView({
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.1 + 0.3, duration: 0.6 }}
-                  className="text-xl md:text-2xl font-light text-white"
+                  className="text-xl md:text-2xl font-light text-primary"
                 >
                   {card.title}
                 </motion.h3>

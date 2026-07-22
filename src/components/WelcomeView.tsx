@@ -42,7 +42,7 @@ export default function WelcomeView({ guestName, onComplete }: WelcomeViewProps)
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 1.2, ease: "easeOut" }}
-            className="text-2xl md:text-3xl font-light text-white tracking-wide leading-relaxed"
+            className="text-2xl md:text-3xl font-light text-primary tracking-wide leading-relaxed"
           >
             أهلاً بك في فيلا مسك
           </motion.h2>

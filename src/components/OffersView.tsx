@@ -22,14 +22,14 @@ export default function OffersView({ offers, isLoading, onBack }: OffersViewProp
         {/* Back Button */}
         <button
           onClick={onBack}
-          className="text-xs text-gray-400 hover:text-white transition-colors"
+          className="text-xs text-gray-400 hover-text-primary transition-colors"
         >
           الرئيسية ←
         </button>
 
         {/* Title */}
         <div className="text-center">
-          <h2 className="text-base font-light text-white">العروض الخاصة</h2>
+          <h2 className="text-base font-light text-primary">العروض الخاصة</h2>
           <p className="text-[9px] text-gold-primary tracking-widest font-sans">SPECIAL OFFERS</p>
         </div>
 
@@ -75,7 +75,7 @@ export default function OffersView({ offers, isLoading, onBack }: OffersViewProp
 
                 {/* Bottom Content */}
                 <div className="space-y-2 max-w-md">
-                  <h3 className="text-lg md:text-xl font-light text-white">
+                  <h3 className="text-lg md:text-xl font-light text-primary">
                     {offer.title}
                   </h3>
                   <p className="text-xs text-gray-400 leading-relaxed font-light">

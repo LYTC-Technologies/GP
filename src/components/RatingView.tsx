@@ -57,7 +57,7 @@ export default function RatingView({ onSubmitRating, onBack }: RatingViewProps) 
               </div>
 
               <div className="space-y-3">
-                <h3 className="text-xl font-light text-white tracking-wide">
+                <h3 className="text-xl font-light text-primary tracking-wide">
                   شكراً لتقديرك وتقييمك
                 </h3>
                 <p className="text-xs text-gray-400 font-light leading-relaxed">
@@ -76,14 +76,14 @@ export default function RatingView({ onSubmitRating, onBack }: RatingViewProps) 
         {/* Back Button */}
         <button
           onClick={onBack}
-          className="text-xs text-gray-400 hover:text-white transition-colors"
+          className="text-xs text-gray-400 hover-text-primary transition-colors"
         >
           الرئيسية ←
         </button>
 
         {/* Title */}
         <div className="text-center">
-          <h2 className="text-base font-light text-white">تقييم الإقامة والخدمات</h2>
+          <h2 className="text-base font-light text-primary">تقييم الإقامة والخدمات</h2>
           <p className="text-[9px] text-gold-primary tracking-widest font-sans">FEEDBACK & RATING</p>
         </div>
 
@@ -100,7 +100,7 @@ export default function RatingView({ onSubmitRating, onBack }: RatingViewProps) 
           className="glass-panel p-6 md:p-10 rounded-[24px] border border-gold-primary/15 shadow-2xl space-y-8 text-center"
         >
           <div className="space-y-2">
-            <h3 className="text-lg font-light text-white">ما مدى رضاك عن مستوى الضيافة؟</h3>
+            <h3 className="text-lg font-light text-primary">ما مدى رضاك عن مستوى الضيافة؟</h3>
             <p className="text-xs text-gray-400 font-light max-w-md mx-auto leading-relaxed">
               تقييمك يسهم مباشرة في ضبط جودة التفاصيل ورعاية أدق متطلبات إقامتك الحالية والقادمة في منتجعات فيلا مسك
             </p>
@@ -148,7 +148,7 @@ export default function RatingView({ onSubmitRating, onBack }: RatingViewProps) 
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="يسعدنا كتابة ملاحظاتك حول أي زميل في الخدمة أو تفاصيل نالت إعجابك أو نقاط تود منا تحسينها..."
-                className="w-full bg-luxury-black/60 rounded-xl p-4 border border-gold-primary/20 text-xs text-white placeholder-gray-600 focus:outline-none transition-all duration-300"
+                className="w-full bg-luxury-black/60 rounded-xl p-4 border border-gold-primary/20 text-xs text-primary placeholder-gray-600 focus:outline-none transition-all duration-300"
               />
             </div>
 

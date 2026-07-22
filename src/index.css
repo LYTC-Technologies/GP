@@ -180,3 +180,25 @@
 .bg-luxury-black {
   background-color: var(--color-luxury-black);
 }
+
+/* Theme-aware hover states */
+.hover-text-primary:hover {
+  color: var(--color-text-primary);
+}
+
+/* Theme-aware backgrounds */
+.bg-white-5 {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="light"] .bg-white-5 {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.bg-white-10 {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="light"] .bg-white-10 {
+  background-color: rgba(0, 0, 0, 0.06);
+}

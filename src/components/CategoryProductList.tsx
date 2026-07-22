@@ -62,14 +62,14 @@ export default function CategoryProductList({
         {/* Back Button */}
         <button
           onClick={onBack}
-          className="text-xs text-gray-400 hover:text-white transition-colors"
+          className="text-xs text-gray-400 hover-text-primary transition-colors"
         >
           الفئات ←
         </button>
 
         {/* Title */}
         <div className="text-center">
-          <h2 className="text-base font-light text-white">{categoryNames[category]}</h2>
+          <h2 className="text-base font-light text-primary">{categoryNames[category]}</h2>
           <p className="text-[9px] text-gold-primary tracking-widest font-sans uppercase">{category}</p>
         </div>
 
@@ -138,7 +138,7 @@ export default function CategoryProductList({
                   {/* Title and descriptions */}
                   <div className="flex-1 flex flex-col justify-between space-y-3">
                     <div className="space-y-1">
-                      <h3 className="text-xs font-light text-white group-hover:text-gold-primary transition-colors duration-300">
+                      <h3 className="text-xs font-light text-primary group-hover:text-gold-primary transition-colors duration-300">
                         {menuItem.name}
                       </h3>
                     </div>

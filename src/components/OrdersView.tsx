@@ -59,14 +59,14 @@ export default function OrdersView({
         {/* Back Button */}
         <button
           onClick={onBack}
-          className="text-xs text-gray-400 hover:text-white transition-colors"
+          className="text-xs text-gray-400 hover-text-primary transition-colors"
         >
           الرئيسية ←
         </button>
 
         {/* Title */}
         <div className="text-center">
-          <h2 className="text-base font-light text-white">قائمة الطلبات</h2>
+          <h2 className="text-base font-light text-primary">قائمة الطلبات</h2>
           <p className="text-[9px] text-gold-primary tracking-widest font-sans">SELECT CATEGORY</p>
         </div>
 
@@ -86,7 +86,7 @@ export default function OrdersView({
         {/* Create Order Button */}
         <button
           onClick={() => setIsCreateOrderModalOpen(true)}
-          className="text-xs text-white px-3 py-1.5 rounded-lg bg-gold-primary/20 hover:bg-gold-primary/30 transition-all duration-300 font-medium border border-gold-primary/30"
+          className="text-xs text-primary px-3 py-1.5 rounded-lg bg-gold-primary/20 hover:bg-gold-primary/30 transition-all duration-300 font-medium border border-gold-primary/30"
         >
           + طلب جديد
         </button>
@@ -134,7 +134,7 @@ export default function OrdersView({
 
               {/* Bottom Titles */}
               <div className="space-y-2 max-w-md">
-                <h3 className="text-lg md:text-xl font-light text-white group-hover:text-gold-primary transition-colors duration-300">
+                <h3 className="text-lg md:text-xl font-light text-primary group-hover:text-gold-primary transition-colors duration-300">
                   {cat.title}
                 </h3>
                 <p className="text-xs text-gray-400 leading-relaxed font-light line-clamp-2">
