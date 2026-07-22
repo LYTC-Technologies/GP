@@ -208,6 +208,11 @@ function AppContent() {
 
       const res = await apiService.createOrder(session.roomNumber, category, itemsPayload);
       if (res.success) {
+        const totalAmount = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+        const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+        alert(`تم إرسال طلبك بنجاح!\n\nرقم الطلب: ${res.orderId}\nعدد العناصر: ${itemCount}\nالإجمالي: ${totalAmount.toFixed(1)} ر.س\n\nيمكنك متابعة حالة الطلب في قسم الطلبات.`);
+
         setCart([]); // Clear cart
         setIsCartOpen(false); // Close cart
 
@@ -219,6 +224,7 @@ function AppContent() {
       }
     } catch (err) {
       console.error("Failed to place order:", err);
+      alert("حدث خطأ أثناء إرسال الطلب. يرجى المحاولة مرة أخرى.");
     } finally {
       setIsSubmittingCart(false);
     }
@@ -528,6 +534,7 @@ function AppContent() {
             <PaymentsView
               stayDetails={stayDetails}
               isLoading={isLoadingStayDetails}
+              orders={orders}
               onBack={() => navigate("#main")}
             />
           </motion.div>

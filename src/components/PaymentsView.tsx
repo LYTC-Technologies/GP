@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "motion/react";
+import { Order } from "../types";
 
 interface StayDetails {
   roomCharge: number;
@@ -14,10 +15,16 @@ interface StayDetails {
 interface PaymentsViewProps {
   stayDetails: StayDetails | null;
   isLoading: boolean;
+  orders: Order[];
   onBack: () => void;
 }
 
-export default function PaymentsView({ stayDetails, isLoading, onBack }: PaymentsViewProps) {
+export default function PaymentsView({ stayDetails, isLoading, orders, onBack }: PaymentsViewProps) {
+  const formatPrice = (price: number | string) => {
+    const numPrice = typeof price === 'string' ? parseFloat(price) : price;
+    if (isNaN(numPrice)) return "0.0";
+    return numPrice.toFixed(1);
+  };
   return (
     <div className="min-h-screen bg-luxury-bg flex flex-col justify-between overflow-x-hidden relative">
       {/* Top Header Bar */}
@@ -90,18 +97,58 @@ export default function PaymentsView({ stayDetails, isLoading, onBack }: Payment
               <div className="space-y-4">
                 <div className="flex justify-between items-center py-3 border-b border-white/5">
                   <span className="text-gray-400">مصاريف الغرفة:</span>
-                  <span className="text-white text-lg font-light">{stayDetails.roomCharge} ر.س</span>
+                  <span className="text-white text-lg font-light">{formatPrice(stayDetails.roomCharge)} ر.س</span>
                 </div>
                 <div className="flex justify-between items-center py-3 border-b border-white/5">
                   <span className="text-gray-400">الخدمات الإضافية:</span>
-                  <span className="text-white text-lg font-light">{(stayDetails.totalCharge - stayDetails.roomCharge).toFixed(2)} ر.س</span>
+                  <span className="text-white text-lg font-light">{formatPrice(stayDetails.totalCharge - stayDetails.roomCharge)} ر.س</span>
                 </div>
                 <div className="flex justify-between items-center py-4 bg-gold-primary/10 rounded-xl px-4">
                   <span className="text-gold-primary font-medium">إجمالي الفاتورة:</span>
-                  <span className="text-gold-primary text-2xl font-light">{stayDetails.totalCharge} ر.س</span>
+                  <span className="text-gold-primary text-2xl font-light">{formatPrice(stayDetails.totalCharge)} ر.س</span>
                 </div>
               </div>
             </div>
+
+            {/* Orders Invoice */}
+            {orders.length > 0 && (
+              <div className="space-y-4">
+                <h3 className="text-lg font-light text-white border-b border-white/10 pb-3">
+                  فاتورة الطلبات
+                </h3>
+                <div className="space-y-3">
+                  {orders.map((order) => (
+                    <div key={order.id} className="bg-white/[0.02] rounded-xl p-4 border border-white/5">
+                      <div className="flex justify-between items-start mb-3">
+                        <div>
+                          <span className="text-xs text-gray-500 block">رقم الطلب</span>
+                          <span className="text-white font-medium">#{order.id}</span>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-xs text-gray-500 block">الحالة</span>
+                          <span className="text-gold-primary text-sm">{order.status}</span>
+                        </div>
+                      </div>
+                      <div className="space-y-2 mb-3">
+                        {order.items.map((item, idx) => (
+                          <div key={idx} className="flex justify-between items-center text-sm">
+                            <span className="text-gray-300">{item.name} x{item.quantity}</span>
+                            <span className="text-white">{formatPrice(item.price * item.quantity)} ر.س</span>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="flex justify-between items-center pt-3 border-t border-white/5">
+                        <span className="text-xs text-gray-500">الإجمالي</span>
+                        <span className="text-gold-primary font-medium">{formatPrice(order.total)} ر.س</span>
+                      </div>
+                      <div className="text-xs text-gray-600 mt-2">
+                        {order.createdAt}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Notes */}
             {stayDetails.notes && (
