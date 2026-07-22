@@ -17,9 +17,10 @@ interface PaymentsViewProps {
   isLoading: boolean;
   orders: Order[];
   onBack: () => void;
+  onRemoveFromInvoice?: (orderId: string) => void;
 }
 
-export default function PaymentsView({ stayDetails, isLoading, orders, onBack }: PaymentsViewProps) {
+export default function PaymentsView({ stayDetails, isLoading, orders, onBack, onRemoveFromInvoice }: PaymentsViewProps) {
   const formatPrice = (price: number | string) => {
     const numPrice = typeof price === 'string' ? parseFloat(price) : price;
     if (isNaN(numPrice)) return "0.0";
@@ -124,9 +125,19 @@ export default function PaymentsView({ stayDetails, isLoading, orders, onBack }:
                           <span className="text-xs text-gray-500 block">رقم الطلب</span>
                           <span className="text-white font-medium">#{order.id}</span>
                         </div>
-                        <div className="text-right">
-                          <span className="text-xs text-gray-500 block">الحالة</span>
-                          <span className="text-gold-primary text-sm">{order.status}</span>
+                        <div className="flex items-center gap-2">
+                          <div className="text-right">
+                            <span className="text-xs text-gray-500 block">الحالة</span>
+                            <span className="text-gold-primary text-sm">{order.status}</span>
+                          </div>
+                          {onRemoveFromInvoice && (
+                            <button
+                              onClick={() => onRemoveFromInvoice(order.id)}
+                              className="text-[9px] bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-1 rounded font-medium hover:bg-red-500/20 transition-colors"
+                            >
+                              إزالة
+                            </button>
+                          )}
                         </div>
                       </div>
                       <div className="space-y-2 mb-3">

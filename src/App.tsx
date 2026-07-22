@@ -85,6 +85,12 @@ function AppContent() {
     return cached ? JSON.parse(cached) : [];
   });
 
+  // Invoice tracking state
+  const [invoicedOrders, setInvoicedOrders] = useState<Set<string>>(() => {
+    const cached = localStorage.getItem("vms_invoiced_orders");
+    return cached ? new Set(JSON.parse(cached)) : new Set();
+  });
+
   // UI Drawer states
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isOrderHistoryOpen, setIsOrderHistoryOpen] = useState(false);
@@ -99,6 +105,10 @@ function AppContent() {
       localStorage.removeItem("vms_session");
     }
   }, [session]);
+
+  useEffect(() => {
+    localStorage.setItem("vms_invoiced_orders", JSON.stringify(Array.from(invoicedOrders)));
+  }, [invoicedOrders]);
 
   useEffect(() => {
     localStorage.setItem("vms_cart", JSON.stringify(cart));
@@ -212,6 +222,9 @@ function AppContent() {
         const totalAmount = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
         const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
+        // Add order to invoiced orders (will be shown in invoice when delivered)
+        setInvoicedOrders(prev => new Set(prev).add(res.orderId.toString()));
+
         alert(`تم إرسال طلبك بنجاح!\n\nرقم الطلب: ${res.orderId}\nعدد العناصر: ${itemCount}\nالإجمالي: ${totalAmount.toFixed(1)} ر.س\n\nيمكنك متابعة حالة الطلب في قسم الطلبات.`);
 
         setCart([]); // Clear cart
@@ -236,6 +249,15 @@ function AppContent() {
     console.log("Order acknowledged:", orderId);
     // Could add logic to mark order as acknowledged or move it to payments
     // For now, just log it
+  };
+
+  // Remove order from invoice
+  const handleRemoveFromInvoice = (orderId: string) => {
+    setInvoicedOrders(prev => {
+      const newSet = new Set(prev);
+      newSet.delete(orderId);
+      return newSet;
+    });
   };
 
   // Create Order from Modal
@@ -342,12 +364,12 @@ function AppContent() {
   const handleLogout = () => {
     setSession(null);
     setCart([]);
+    setInvoicedOrders(new Set()); // Clear invoice on checkout
     navigate("#login");
   };
 
   return (
     <div className="min-h-screen relative" style={{ backgroundColor: 'var(--color-luxury-bg)', color: 'var(--color-text-primary)' }}>
-      <ThemeToggle />
       {/* App transitions and container structure */}
       <AnimatePresence mode="wait">
         {/* Splash View */}
@@ -545,8 +567,9 @@ function AppContent() {
             <PaymentsView
               stayDetails={stayDetails}
               isLoading={isLoadingStayDetails}
-              orders={orders}
+              orders={orders.filter(order => invoicedOrders.has(order.id) && order.status === "تم التوصيل")}
               onBack={() => navigate("#main")}
+              onRemoveFromInvoice={handleRemoveFromInvoice}
             />
           </motion.div>
         )}

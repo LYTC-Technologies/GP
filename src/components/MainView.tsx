@@ -4,6 +4,7 @@ import { StayInfo, CartItem } from "../types";
 import VillaMiskLogo from "./VillaMiskLogo";
 import OffersCard from "./OffersCard";
 import PaymentsCard from "./PaymentsCard";
+import ThemeToggle from "./ThemeToggle";
 
 interface MainViewProps {
   stayInfo: StayInfo | null;
@@ -67,16 +68,16 @@ export default function MainView({
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-96 bg-gold-primary/5 blur-[120px] rounded-full pointer-events-none" />
 
       {/* Header Bar */}
-      <header className="relative z-20 px-6 py-6 border-b border-white/5 bg-luxury-black/40 backdrop-blur-md flex items-center justify-between">
+      <header className="relative z-20 px-4 sm:px-6 py-4 sm:py-6 border-b border-white/5 bg-luxury-black/40 backdrop-blur-md flex items-center justify-between">
         {/* Left Side: Unified Single Button */}
         <div className="flex items-center">
           <button
             onClick={onOpenCart}
-            className="text-[12px] tracking-wider text-gold-primary px-5 py-3 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-gold-primary/20 hover:border-gold-primary/45 transition-all duration-300 font-medium"
+            className="text-[10px] sm:text-[12px] tracking-wider text-gold-primary px-3 sm:px-5 py-2 sm:py-3 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-gold-primary/20 hover:border-gold-primary/45 transition-all duration-300 font-medium"
           >
             طلباتي
             {combinedTotalCount > 0 && (
-              <span className="mr-2 font-sans bg-gold-primary text-black px-2 py-0.5 rounded-md text-[10px] font-bold">
+              <span className="mr-1 sm:mr-2 font-sans bg-gold-primary text-black px-1.5 sm:px-2 py-0.5 rounded-md text-[9px] sm:text-[10px] font-bold">
                 {combinedTotalCount}
               </span>
             )}
@@ -85,21 +86,24 @@ export default function MainView({
 
         {/* Center: Miniature text logo */}
         <div className="flex flex-col items-center">
-          <span className="text-xs tracking-[0.3em] font-sans text-gold-primary font-light">VILLA MISK</span>
-          <span className="text-[8px] text-gray-500 tracking-[0.2em]">PRIVATE PORTAL</span>
+          <span className="text-[10px] sm:text-xs tracking-[0.2em] sm:tracking-[0.3em] font-sans text-gold-primary font-light">VILLA MISK</span>
+          <span className="text-[7px] sm:text-[8px] text-gray-500 tracking-[0.15em] sm:tracking-[0.2em] hidden sm:block">PRIVATE PORTAL</span>
         </div>
 
-        {/* Right Side: Log Out */}
-        <button
-          onClick={onLogout}
-          className="text-xs px-4 py-2.5 rounded-xl bg-white/5 hover:bg-red-500/10 border border-white/5 hover:border-red-500/20 text-gray-400 hover:text-red-400 transition-all duration-300"
-        >
-          خروج
-        </button>
+        {/* Right Side: Log Out & Theme Toggle */}
+        <div className="flex items-center gap-1 sm:gap-2">
+          <ThemeToggle />
+          <button
+            onClick={onLogout}
+            className="text-[10px] sm:text-xs px-2 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-white/5 hover:bg-red-500/10 border border-white/5 hover:border-red-500/20 text-gray-400 hover:text-red-400 transition-all duration-300"
+          >
+            خروج
+          </button>
+        </div>
       </header>
 
       {/* Main Container */}
-      <main className="flex-1 w-full max-w-6xl mx-auto px-6 py-8 flex flex-col justify-center">
+      <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col justify-center">
         {/* Stay Summary Panel */}
         {stayInfo && (
           <motion.div
