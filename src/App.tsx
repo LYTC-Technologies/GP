@@ -23,6 +23,7 @@ import SpecialRequestsView from "./components/SpecialRequestsView";
 import RatingView from "./components/RatingView";
 import OffersView from "./components/OffersView";
 import PaymentsView from "./components/PaymentsView";
+import ThemeToggle from "./components/ThemeToggle";
 
 // Initialize TanStack Query Client
 const queryClient = new QueryClient({
@@ -345,14 +346,16 @@ function AppContent() {
   };
 
   return (
-    <div className="min-h-screen bg-luxury-bg text-white relative">
+    <div className="min-h-screen relative" style={{ backgroundColor: 'var(--color-luxury-bg)', color: 'var(--color-text-primary)' }}>
+      <ThemeToggle />
       {/* App transitions and container structure */}
       <AnimatePresence mode="wait">
         {/* Splash View */}
         {activeScreen === "splash" && (
           <motion.div
             key="splash"
-            className="fixed inset-0 w-full h-full z-50 flex items-center justify-center bg-luxury-black"
+            className="fixed inset-0 w-full h-full z-50 flex items-center justify-center"
+            style={{ backgroundColor: 'var(--color-luxury-black)' }}
             initial={{ opacity: 0, y: 15, filter: "blur(4px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             exit={{ opacity: 0, y: -15, filter: "blur(4px)" }}
