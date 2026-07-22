@@ -14,6 +14,7 @@ interface CartDrawerProps {
   specialRequests?: SpecialRequest[];
   onCancelOrder?: (orderId: string) => Promise<boolean>;
   onDeleteOrder?: (orderId: string) => Promise<boolean>;
+  onAcknowledgeOrder?: (orderId: string) => void;
   isCancellingId?: string | null;
   isLoadingOrders?: boolean;
 }
@@ -30,6 +31,7 @@ export default function CartDrawer({
   specialRequests = [],
   onCancelOrder,
   onDeleteOrder,
+  onAcknowledgeOrder,
   isCancellingId = null,
   isLoadingOrders = false
 }: CartDrawerProps) {
@@ -115,12 +117,16 @@ export default function CartDrawer({
                             className="glass-panel p-4 rounded-xl border border-white/5 flex items-center justify-between space-x-4 space-x-reverse"
                           >
                             {/* Product Image */}
-                            <img
-                              src={item.product.image}
-                              alt={item.product.name}
-                              referrerPolicy="no-referrer"
-                              className="w-14 h-14 rounded-lg object-cover border border-white/5 filter brightness-90 shrink-0"
-                            />
+                            {item.product.image ? (
+                              <img
+                                src={item.product.image}
+                                alt={item.product.name}
+                                referrerPolicy="no-referrer"
+                                className="w-14 h-14 rounded-lg object-cover border border-white/5 filter brightness-90 shrink-0"
+                              />
+                            ) : (
+                              <div className="w-14 h-14 rounded-lg bg-gradient-to-br from-gold-primary/10 via-luxury-black/60 to-luxury-black/80 border border-white/5 shrink-0" />
+                            )}
 
                             {/* Product details */}
                             <div className="flex-1 min-w-0">
@@ -221,6 +227,15 @@ export default function CartDrawer({
                                   <div>
                                     <span className="text-[10px] text-gold-primary font-semibold font-sans">{formatPrice(order.total)} ر.س</span>
                                   </div>
+
+                                  {order.status === "تم التوصيل" && (
+                                    <button
+                                      onClick={() => onAcknowledgeOrder?.(order.id)}
+                                      className="text-[9px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-1 rounded font-medium hover:bg-emerald-500/20 transition-colors"
+                                    >
+                                      OK
+                                    </button>
+                                  )}
 
                                   {order.status === "قيد الانتظار" && onCancelOrder && (
                                     <button

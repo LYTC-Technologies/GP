@@ -230,6 +230,13 @@ function AppContent() {
     }
   };
 
+  // Acknowledge completed order
+  const handleAcknowledgeOrder = (orderId: string) => {
+    console.log("Order acknowledged:", orderId);
+    // Could add logic to mark order as acknowledged or move it to payments
+    // For now, just log it
+  };
+
   // Create Order from Modal
   const handleCreateOrder = async (category: "FOOD" | "DRINK" | "SERVICE", items: { menuItemId: number; quantity: number; notes?: string }[]) => {
     if (!session) return;
@@ -485,6 +492,7 @@ function AppContent() {
               onSubmitRequest={handleSubmitSpecialRequest}
               onBack={() => navigate("#main")}
               existingRequests={specialRequests}
+              onAddToCart={handleAddToCart}
             />
           </motion.div>
         )}
@@ -554,6 +562,7 @@ function AppContent() {
         specialRequests={specialRequests}
         onCancelOrder={handleCancelOrder}
         onDeleteOrder={handleDeleteOrder}
+        onAcknowledgeOrder={handleAcknowledgeOrder}
         isCancellingId={isCancellingId}
         isLoadingOrders={isOrdersLoading}
       />

@@ -16,6 +16,7 @@ interface SpecialRequestsViewProps {
   onSubmitRequest: (categoryId: string, notes: string) => Promise<boolean>;
   onBack: () => void;
   existingRequests: SpecialRequest[];
+  onAddToCart?: (product: { id: string; name: string; price: number; category: string; description: string; image: string }) => void;
 }
 
 export default function SpecialRequestsView({
@@ -24,7 +25,8 @@ export default function SpecialRequestsView({
   isLoading,
   onSubmitRequest,
   onBack,
-  existingRequests
+  existingRequests,
+  onAddToCart
 }: SpecialRequestsViewProps) {
   const formatPrice = (price: number) => price.toFixed(1);
 
@@ -168,6 +170,22 @@ export default function SpecialRequestsView({
                         <span className="text-xs text-gold-primary font-sans font-medium tracking-wide">
                           {formatPrice(offer.price)} ر.س
                         </span>
+                        {onAddToCart && (
+                          <motion.button
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => onAddToCart({
+                              id: offer.id.toString(),
+                              name: offer.title,
+                              price: offer.price,
+                              category: "special_offers",
+                              description: offer.description,
+                              image: ""
+                            })}
+                            className="btn-gold-outline rounded-xl px-3.5 py-1.5 text-[10px] tracking-wide font-medium"
+                          >
+                            + أضف للسلة
+                          </motion.button>
+                        )}
                       </div>
                     </div>
                   </motion.div>
