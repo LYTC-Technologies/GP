@@ -33,7 +33,11 @@ export default function CartDrawer({
   isCancellingId = null,
   isLoadingOrders = false
 }: CartDrawerProps) {
-  const formatPrice = (price: number) => price.toFixed(1);
+  const formatPrice = (price: number | string) => {
+    const numPrice = typeof price === 'string' ? parseFloat(price) : price;
+    if (isNaN(numPrice)) return "0.0";
+    return numPrice.toFixed(1);
+  };
 
   const totalAmount = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
