@@ -2,8 +2,16 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { SpecialRequestCategory, SpecialRequest } from "../types";
 
+interface SpecialOffer {
+  id: number;
+  title: string;
+  description: string;
+  price: number;
+}
+
 interface SpecialRequestsViewProps {
   categories: SpecialRequestCategory[];
+  specialOffers: SpecialOffer[];
   isLoading: boolean;
   onSubmitRequest: (categoryId: string, notes: string) => Promise<boolean>;
   onBack: () => void;
@@ -12,11 +20,14 @@ interface SpecialRequestsViewProps {
 
 export default function SpecialRequestsView({
   categories,
+  specialOffers,
   isLoading,
   onSubmitRequest,
   onBack,
   existingRequests
 }: SpecialRequestsViewProps) {
+  const formatPrice = (price: number) => price.toFixed(1);
+
   const [selectedCategory, setSelectedCategory] = useState<SpecialRequestCategory | null>(null);
   const [notes, setNotes] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -123,27 +134,42 @@ export default function SpecialRequestsView({
                 ))}
               </div>
             ) : (
-              <div className="space-y-4">
-                {categories.map((cat, idx) => (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {specialOffers.map((offer, idx) => (
                   <motion.div
-                    key={cat.id}
-                    initial={{ opacity: 0, y: 15 }}
+                    key={offer.id}
+                    initial={{ opacity: 0, y: 25 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: idx * 0.08, duration: 0.6 }}
-                    onClick={() => setSelectedCategory(cat)}
-                    className="glass-panel p-5 rounded-2xl border border-gold-primary/10 hover:border-gold-primary/30 transition-all duration-300 cursor-pointer flex items-center justify-between group"
+                    transition={{ delay: idx * 0.08, duration: 0.8, cubicBezier: [0.16, 1, 0.3, 1] }}
+                    whileHover={{ y: -6 }}
+                    className="glass-panel p-4 rounded-[24px] border border-gold-primary/10 hover:border-gold-primary/25 transition-all duration-500 shadow-lg flex flex-col justify-between group overflow-hidden"
                   >
-                    <div className="space-y-1.5 flex-1 min-w-0 pr-1">
-                      <h4 className="text-xs font-medium text-white group-hover:text-gold-primary transition-colors">
-                        {cat.name}
-                      </h4>
-                      <p className="text-[10px] text-gray-500 font-light truncate">
-                        {cat.description}
-                      </p>
+                    {/* Image container with gradient */}
+                    <div className="relative w-full h-48 rounded-2xl overflow-hidden mb-4 bg-black/40">
+                      <div className="w-full h-full bg-gradient-to-br from-gold-primary/10 via-luxury-black/60 to-luxury-black/80" />
+
+                      {/* Golden subtle aura decoration */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-60" />
                     </div>
-                    <span className="text-gold-primary/50 group-hover:text-gold-primary group-hover:translate-x-[-4px] transition-all text-sm shrink-0">
-                      ←
-                    </span>
+
+                    {/* Title and descriptions */}
+                    <div className="flex-1 flex flex-col justify-between space-y-3">
+                      <div>
+                        <h3 className="text-sm text-white font-light leading-tight mb-2">
+                          {offer.title}
+                        </h3>
+                        <p className="text-[10px] text-gray-500 font-light leading-relaxed line-clamp-3">
+                          {offer.description}
+                        </p>
+                      </div>
+
+                      {/* Pricing */}
+                      <div className="flex items-center justify-between pt-2">
+                        <span className="text-xs text-gold-primary font-sans font-medium tracking-wide">
+                          {formatPrice(offer.price)} ر.س
+                        </span>
+                      </div>
+                    </div>
                   </motion.div>
                 ))}
               </div>

@@ -6,6 +6,7 @@
 import React, { useState, useEffect } from "react";
 import { QueryClient, QueryClientProvider, useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "motion/react";
+import { HashRouter, Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import { apiService } from "./lib/api";
 import { Product, CartItem, Order, SpecialRequest, GuestSession } from "./types";
 
@@ -20,6 +21,8 @@ import OrdersView from "./components/OrdersView";
 import CategoryProductList from "./components/CategoryProductList";
 import SpecialRequestsView from "./components/SpecialRequestsView";
 import RatingView from "./components/RatingView";
+import OffersView from "./components/OffersView";
+import PaymentsView from "./components/PaymentsView";
 
 // Initialize TanStack Query Client
 const queryClient = new QueryClient({
@@ -42,14 +45,36 @@ type ScreenState =
   | "drinks"
   | "room_service"
   | "special_requests"
-  | "rating";
+  | "rating"
+  | "offers"
+  | "payments";
 
 function AppContent() {
   const queryClientRef = useQueryClient();
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  // Core App Navigation State
-  const [activeScreen, setActiveScreen] = useState<ScreenState>("splash");
-  
+  // Get current screen from hash
+  const getScreenFromHash = (): ScreenState => {
+    const hash = location.hash.replace("#", "");
+    if (hash === "" || hash === "splash") return "splash";
+    if (hash === "login") return "login";
+    if (hash === "loading") return "loading";
+    if (hash === "welcome") return "welcome";
+    if (hash === "main") return "main";
+    if (hash === "orders") return "orders";
+    if (hash === "restaurant") return "restaurant";
+    if (hash === "drinks") return "drinks";
+    if (hash === "room_service") return "room_service";
+    if (hash === "special_requests") return "special_requests";
+    if (hash === "rating") return "rating";
+    if (hash === "offers") return "offers";
+    if (hash === "payments") return "payments";
+    return "splash";
+  };
+
+  const activeScreen = getScreenFromHash();
+
   // Session State (Room number, guest name)
   const [session, setSession] = useState<GuestSession | null>(null);
 
@@ -81,7 +106,7 @@ function AppContent() {
   // Scroll to top elegantly when navigating to a different screen
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [activeScreen]);
+  }, [location.hash]);
 
   // Queries (TanStack Query)
   
@@ -109,6 +134,25 @@ function AppContent() {
     queryKey: ["specialRequests", session?.roomNumber],
     queryFn: () => apiService.getSpecialRequests(session!.roomNumber),
     enabled: !!session?.roomNumber,
+  });
+
+  // Fetch special offers
+  const { data: offers = [], isLoading: isLoadingOffers } = useQuery({
+    queryKey: ["offers"],
+    queryFn: apiService.getOffers,
+  });
+
+  // Fetch stay details for payments
+  const { data: stayDetails = null, isLoading: isLoadingStayDetails } = useQuery({
+    queryKey: ["stayDetails", session?.roomNumber],
+    queryFn: () => apiService.getStayDetails(session!.roomNumber),
+    enabled: !!session?.roomNumber,
+  });
+
+  // Fetch menu items
+  const { data: menuItems = [], isLoading: isLoadingMenuItems } = useQuery({
+    queryKey: ["menuItems"],
+    queryFn: () => apiService.getMenu(),
   });
 
   // Get active count of pending orders (status starting from قيد الانتظار)
@@ -152,19 +196,23 @@ function AppContent() {
 
     setIsSubmittingCart(true);
     try {
+      // Determine category based on cart items
+      const category = cart[0].product.category === "restaurant" ? "FOOD" :
+                       cart[0].product.category === "drinks" ? "DRINK" : "SERVICE";
+
       const itemsPayload = cart.map((item) => ({
-        productId: item.product.id,
+        menuItemId: parseInt(item.product.id),
         quantity: item.quantity,
       }));
 
-      const res = await apiService.createOrder(session.roomNumber, itemsPayload);
+      const res = await apiService.createOrder(session.roomNumber, category, itemsPayload);
       if (res.success) {
         setCart([]); // Clear cart
         setIsCartOpen(false); // Close cart
-        
+
         // Invalidate and refetch orders
         await queryClientRef.invalidateQueries({ queryKey: ["orders", session.roomNumber] });
-        
+
         // Open order history to let them track progress
         setIsOrderHistoryOpen(true);
       }
@@ -172,6 +220,17 @@ function AppContent() {
       console.error("Failed to place order:", err);
     } finally {
       setIsSubmittingCart(false);
+    }
+  };
+
+  // Create Order from Modal
+  const handleCreateOrder = async (category: "FOOD" | "DRINK" | "SERVICE", items: { menuItemId: number; quantity: number; notes?: string }[]) => {
+    if (!session) return;
+
+    const res = await apiService.createOrder(session.roomNumber, category, items);
+    if (res.success) {
+      // Invalidate and refetch orders
+      await queryClientRef.invalidateQueries({ queryKey: ["orders", session.roomNumber] });
     }
   };
 
@@ -246,29 +305,29 @@ function AppContent() {
   const handleSplashComplete = () => {
     // If we have an existing session cached, bypass login but show loading
     if (session) {
-      setActiveScreen("loading");
+      navigate("#loading");
     } else {
-      setActiveScreen("login");
+      navigate("#login");
     }
   };
 
   const handleLoginSuccess = (guestSession: GuestSession) => {
     setSession(guestSession);
-    setActiveScreen("loading");
+    navigate("#loading");
   };
 
   const handleLoadingComplete = () => {
-    setActiveScreen("welcome");
+    navigate("#welcome");
   };
 
   const handleWelcomeComplete = () => {
-    setActiveScreen("main");
+    navigate("#main");
   };
 
   const handleLogout = () => {
     setSession(null);
     setCart([]);
-    setActiveScreen("login");
+    navigate("#login");
   };
 
   return (
@@ -344,10 +403,14 @@ function AppContent() {
               stayInfo={session?.stayInfo || null}
               cart={cart}
               onOpenCart={() => setIsCartOpen(true)}
-              onNavigate={(screen) => setActiveScreen(screen)}
+              onNavigate={(screen) => navigate(`#${screen}`)}
               onLogout={handleLogout}
               activeOrdersCount={activeOrdersCount}
               onOpenOrderHistory={() => setIsCartOpen(true)}
+              offers={offers}
+              isLoadingOffers={isLoadingOffers}
+              stayDetails={stayDetails}
+              isLoadingStayDetails={isLoadingStayDetails}
             />
           </motion.div>
         )}
@@ -364,8 +427,10 @@ function AppContent() {
             <OrdersView
               cart={cart}
               onOpenCart={() => setIsCartOpen(true)}
-              onSelectCategory={(category) => setActiveScreen(category)}
-              onBack={() => setActiveScreen("main")}
+              onSelectCategory={(category) => navigate(`#${category}`)}
+              onBack={() => navigate("#main")}
+              roomNumber={session?.roomNumber || ""}
+              onAddToCart={handleAddToCart}
             />
           </motion.div>
         )}
@@ -382,9 +447,10 @@ function AppContent() {
             <CategoryProductList
               category={activeScreen}
               products={products}
+              menuItems={menuItems}
               isLoading={isProductsLoading}
               onAddToCart={handleAddToCart}
-              onBack={() => setActiveScreen("orders")}
+              onBack={() => navigate("#orders")}
               onOpenCart={() => setIsCartOpen(true)}
               cart={cart}
             />
@@ -402,9 +468,10 @@ function AppContent() {
           >
             <SpecialRequestsView
               categories={requestCategories}
+              specialOffers={offers.map(o => ({ ...o, price: 0 }))}
               isLoading={isCategoriesLoading}
               onSubmitRequest={handleSubmitSpecialRequest}
-              onBack={() => setActiveScreen("main")}
+              onBack={() => navigate("#main")}
               existingRequests={specialRequests}
             />
           </motion.div>
@@ -421,7 +488,41 @@ function AppContent() {
           >
             <RatingView
               onSubmitRating={handleSubmitRating}
-              onBack={() => setActiveScreen("main")}
+              onBack={() => navigate("#main")}
+            />
+          </motion.div>
+        )}
+
+        {/* Offers View */}
+        {activeScreen === "offers" && (
+          <motion.div
+            key="offers"
+            initial={{ opacity: 0, y: 15, filter: "blur(4px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            exit={{ opacity: 0, y: -15, filter: "blur(4px)" }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <OffersView
+              offers={offers}
+              isLoading={isLoadingOffers}
+              onBack={() => navigate("#main")}
+            />
+          </motion.div>
+        )}
+
+        {/* Payments View */}
+        {activeScreen === "payments" && (
+          <motion.div
+            key="payments"
+            initial={{ opacity: 0, y: 15, filter: "blur(4px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            exit={{ opacity: 0, y: -15, filter: "blur(4px)" }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <PaymentsView
+              stayDetails={stayDetails}
+              isLoading={isLoadingStayDetails}
+              onBack={() => navigate("#main")}
             />
           </motion.div>
         )}
@@ -450,7 +551,9 @@ function AppContent() {
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AppContent />
+      <HashRouter>
+        <AppContent />
+      </HashRouter>
     </QueryClientProvider>
   );
 }

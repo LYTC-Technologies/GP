@@ -1,5 +1,7 @@
 import { Product, Order, SpecialRequestCategory, SpecialRequest, StayInfo, GuestSession } from "../types";
 
+const API_BASE_URL = "https://lytc-hotel-backend.onrender.com";
+
 // Static database elements mimicking backend data
 const products: Product[] = [
   // Restaurant (المطعم)
@@ -158,15 +160,6 @@ function saveLocalRequests(requests: SpecialRequest[]) {
   localStorage.setItem("vms_special_requests_db", JSON.stringify(requests));
 }
 
-function getLocalRatings(): any[] {
-  const data = localStorage.getItem("vms_ratings_db");
-  return data ? JSON.parse(data) : [];
-}
-
-function saveLocalRatings(ratings: any[]) {
-  localStorage.setItem("vms_ratings_db", JSON.stringify(ratings));
-}
-
 export const apiService = {
   // Login with Room Number
   async login(roomNumber: string): Promise<GuestSession> {
@@ -202,6 +195,55 @@ export const apiService = {
       conciergeNumber: "+٩٦٦ ٥٠ ٠٠٠ ٠٠٠٠",
       capacity: "شخصين بالغين",
     };
+  },
+
+  // Get Stay Details (including payment information)
+  async getStayDetails(roomNumber: string): Promise<{
+    roomCharge: number;
+    totalCharge: number;
+    checkInTime: string;
+    expectedCheckOutDate: string;
+    checkOutTime: string | null;
+    status: string;
+    notes: string | null;
+  }> {
+    const url = new URL(`${API_BASE_URL}/api/guest/stay-details`);
+    url.searchParams.append("roomNumber", roomNumber);
+
+    console.log("Fetching stay details for room:", roomNumber);
+    console.log("URL:", url.toString());
+
+    try {
+      const response = await fetch(url.toString(), {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log("Response status:", response.status);
+
+      if (!response.ok) {
+        console.error("Failed to fetch stay details, status:", response.status);
+        throw new Error("Failed to fetch stay details");
+      }
+
+      const data = await response.json();
+      console.log("Stay details data:", data);
+
+      return {
+        roomCharge: data.roomCharge || 0,
+        totalCharge: data.totalCharge || 0,
+        checkInTime: data.checkInTime || "",
+        expectedCheckOutDate: data.expectedCheckOutDate || "",
+        checkOutTime: data.checkOutTime || null,
+        status: data.status || "UNKNOWN",
+        notes: data.notes || null,
+      };
+    } catch (error) {
+      console.error("Error fetching stay details:", error);
+      throw error;
+    }
   },
 
   // Get All Products
@@ -253,9 +295,74 @@ export const apiService = {
     return requests.filter((r) => r.roomNumber === roomNumber);
   },
 
-  // Get Offers
-  async getOffers(): Promise<{ id: string; name: string; description: string }[]> {
-    return offers;
+  // Get Special Offers
+  async getOffers(): Promise<{ id: number; title: string; description: string }[]> {
+    const url = new URL(`${API_BASE_URL}/api/guest/special-offers`);
+    url.searchParams.append("page", "0");
+    url.searchParams.append("size", "10");
+
+    const response = await fetch(url.toString(), {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch special offers");
+    }
+
+    const data = await response.json();
+    return data.content || [];
+  },
+
+  // Get Menu Items
+  async getMenu(category?: string): Promise<{ id: number; name: string; price: number; category: string }[]> {
+    const url = new URL(`${API_BASE_URL}/api/guest/menu`);
+    url.searchParams.append("page", "0");
+    url.searchParams.append("size", "100");
+    if (category) {
+      url.searchParams.append("category", category);
+    }
+
+    const response = await fetch(url.toString(), {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch menu items");
+    }
+
+    const data = await response.json();
+    return data.content || [];
+  },
+
+  // Get Special Orders
+  async getSpecialOrders(roomNumber: string): Promise<{
+    id: number;
+    specialOffer: { id: number; title: string; description: string };
+    agreedPrice: number;
+    createdAt: string;
+  }[]> {
+    const url = new URL(`${API_BASE_URL}/api/guest/stays/special-orders`);
+    url.searchParams.append("roomNumber", roomNumber);
+
+    const response = await fetch(url.toString(), {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch special orders");
+    }
+
+    const data = await response.json();
+    return data || [];
   },
 
   // Get Room's Orders
@@ -268,47 +375,29 @@ export const apiService = {
   // Create Order
   async createOrder(
     roomNumber: string,
-    items: { productId: string; quantity: number }[]
-  ): Promise<{ success: boolean; order: Order }> {
-    await new Promise((resolve) => setTimeout(resolve, 600));
-    if (!roomNumber || !isValidRoom(roomNumber)) {
-      throw new Error("رقم الغرفة غير صحيح");
-    }
-    if (!items || items.length === 0) {
-      throw new Error("سلة المشتريات فارغة");
-    }
+    category: "FOOD" | "DRINK" | "SERVICE",
+    items: { menuItemId: number; quantity: number; notes?: string }[]
+  ): Promise<{ success: boolean; orderId: number }> {
+    const url = new URL(`${API_BASE_URL}/api/guest/orders`);
+    url.searchParams.append("roomNumber", roomNumber);
 
-    let calculatedTotal = 0;
-    const orderItems = [];
+    const response = await fetch(url.toString(), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        category,
+        items,
+      }),
+    });
 
-    for (const item of items) {
-      const product = products.find((p) => p.id === item.productId);
-      if (!product) {
-        throw new Error(`المنتج غير متوفر`);
-      }
-      calculatedTotal += product.price * item.quantity;
-      orderItems.push({
-        productId: product.id,
-        name: product.name,
-        quantity: item.quantity,
-        price: product.price,
-      });
+    if (!response.ok) {
+      throw new Error("Failed to create order");
     }
 
-    const newOrder: Order = {
-      id: `VMS-${Math.floor(1000 + Math.random() * 9000)}`,
-      roomNumber,
-      items: orderItems,
-      total: calculatedTotal,
-      status: "قيد الانتظار",
-      createdAt: new Date().toLocaleTimeString("ar-SA", { hour: "2-digit", minute: "2-digit" }),
-    };
-
-    const orders = getLocalOrders();
-    orders.unshift(newOrder);
-    saveLocalOrders(orders);
-
-    return { success: true, order: newOrder };
+    const data = await response.json();
+    return { success: true, orderId: data.id };
   },
 
   // Cancel Order
@@ -342,15 +431,24 @@ export const apiService = {
 
   // Submit Stay Rating
   async submitRating(roomNumber: string, stars: number, notes: string): Promise<{ success: boolean }> {
-    await new Promise((resolve) => setTimeout(resolve, 400));
-    const ratings = getLocalRatings();
-    ratings.push({
-      roomNumber,
-      stars,
-      notes,
-      createdAt: new Date().toISOString(),
+    const url = new URL(`${API_BASE_URL}/api/guest/stay/rating`);
+    url.searchParams.append("roomNumber", roomNumber);
+
+    const response = await fetch(url.toString(), {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        stars,
+        notes: notes || "",
+      }),
     });
-    saveLocalRatings(ratings);
+
+    if (!response.ok) {
+      throw new Error("Failed to submit rating");
+    }
+
     return { success: true };
   },
 };

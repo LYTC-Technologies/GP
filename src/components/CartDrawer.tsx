@@ -33,6 +33,8 @@ export default function CartDrawer({
   isCancellingId = null,
   isLoadingOrders = false
 }: CartDrawerProps) {
+  const formatPrice = (price: number) => price.toFixed(1);
+
   const totalAmount = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
   // Combine and sort both normal orders and special requests chronologically
@@ -122,7 +124,7 @@ export default function CartDrawer({
                                 {item.product.name}
                               </h4>
                               <p className="text-[10px] text-gold-primary/80 font-sans tracking-wide">
-                                {item.product.price} ر.س
+                                {formatPrice(item.product.price)} ر.س
                               </p>
 
                               {/* Quantity actions */}
@@ -206,14 +208,14 @@ export default function CartDrawer({
                                       <span className="font-light">
                                         {it.name} <span className="font-sans text-[10px] text-gray-500">x{it.quantity}</span>
                                       </span>
-                                      <span className="font-sans">{it.price * it.quantity} ر.س</span>
+                                      <span className="font-sans">{formatPrice(it.price * it.quantity)} ر.س</span>
                                     </div>
                                   ))}
                                 </div>
 
                                 <div className="flex justify-between items-center border-t border-white/5 pt-2">
                                   <div>
-                                    <span className="text-[10px] text-gold-primary font-semibold font-sans">{order.total} ر.س</span>
+                                    <span className="text-[10px] text-gold-primary font-semibold font-sans">{formatPrice(order.total)} ر.س</span>
                                   </div>
 
                                   {order.status === "قيد الانتظار" && onCancelOrder && (

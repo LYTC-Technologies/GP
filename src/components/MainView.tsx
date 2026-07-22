@@ -2,15 +2,26 @@ import React from "react";
 import { motion } from "motion/react";
 import { StayInfo, CartItem } from "../types";
 import VillaMiskLogo from "./VillaMiskLogo";
+import OffersCard from "./OffersCard";
+import PaymentsCard from "./PaymentsCard";
 
 interface MainViewProps {
   stayInfo: StayInfo | null;
   cart: CartItem[];
   onOpenCart: () => void;
-  onNavigate: (screen: "orders" | "special_requests" | "rating") => void;
+  onNavigate: (screen: "orders" | "special_requests" | "rating" | "offers" | "payments") => void;
   onLogout: () => void;
   activeOrdersCount: number;
   onOpenOrderHistory: () => void;
+  offers: { id: number; title: string; description: string }[];
+  isLoadingOffers: boolean;
+  stayDetails: {
+    roomCharge: number;
+    totalCharge: number;
+    checkInTime: string;
+    expectedCheckOutDate: string;
+  } | null;
+  isLoadingStayDetails: boolean;
 }
 
 export default function MainView({
@@ -20,7 +31,11 @@ export default function MainView({
   onNavigate,
   onLogout,
   activeOrdersCount,
-  onOpenOrderHistory
+  onOpenOrderHistory,
+  offers,
+  isLoadingOffers,
+  stayDetails,
+  isLoadingStayDetails
 }: MainViewProps) {
   const totalCartItems = cart.reduce((sum, item) => sum + item.quantity, 0);
   const combinedTotalCount = totalCartItems + activeOrdersCount;
@@ -30,21 +45,18 @@ export default function MainView({
       id: "orders",
       title: "الطلبات الفندقية",
       description: "طلب المأكولات الفاخرة، المشروبات المنعشة، والمقبلات مباشرةً إلى جناحك الخاص بلمسة واحدة",
-      image: "https://images.pexels.com/photos/262047/pexels-photo-262047.jpeg?auto=compress&cs=tinysrgb&w=1200",
       target: "orders" as const
     },
     {
       id: "special_requests",
       title: "الطلبات الخاصة والخدمات",
       description: "خدمات ترتيب الجناح، مناولة الأمتعة، حجز السيارات، والتواصل المباشر مع المساعد الشخصي",
-      image: "https://images.pexels.com/photos/2082087/pexels-photo-2082087.jpeg?auto=compress&cs=tinysrgb&w=1200",
       target: "special_requests" as const
     },
     {
       id: "rating",
       title: "تقييم الإقامة في المنتجع",
       description: "مشاركتنا انطباعك وتقييمك يساعدنا على تقديم الخدمة الاستثنائية التي تليق بتطلعاتك الراقية",
-      image: "https://images.pexels.com/photos/338504/pexels-photo-338504.jpeg?auto=compress&cs=tinysrgb&w=1200",
       target: "rating" as const
     }
   ];
@@ -110,48 +122,50 @@ export default function MainView({
           <VillaMiskLogo size="md" className="scale-90" />
         </div>
 
+        {/* Cards Row */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          {/* Special Offers Card */}
+          <OffersCard 
+            offers={offers} 
+            isLoadingOffers={isLoadingOffers} 
+            onClick={() => onNavigate("offers")}
+          />
+
+          {/* Payments Card */}
+          <PaymentsCard 
+            stayDetails={stayDetails}
+            isLoading={isLoadingStayDetails}
+            onClick={() => onNavigate("payments")}
+          />
+        </div>
+
         {/* Massive Card Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 flex-1 items-stretch">
           {cards.map((card, idx) => (
             <motion.div
               key={card.id}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.15, duration: 1.0, cubicBezier: [0.16, 1, 0.3, 1] }}
-              whileHover={{ y: -8, scale: 1.01 }}
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               onClick={() => onNavigate(card.target)}
-              className="relative rounded-[24px] overflow-hidden group cursor-pointer border border-gold-primary/10 hover:border-gold-primary/35 shadow-[0_15px_30px_rgba(0,0,0,0.6)] hover:shadow-[0_20px_45px_rgba(223,186,115,0.08)] transition-all duration-700 flex flex-col justify-end min-h-[320px] md:min-h-[420px] p-6 md:p-8"
-              style={{
-                background: "radial-gradient(circle at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.95) 100%)"
-              }}
+              transition={{ delay: idx * 0.1, duration: 0.9, cubicBezier: [0.16, 1, 0.3, 1] }}
+              className="relative h-48 md:h-60 rounded-2xl overflow-hidden border border-white/5 hover:border-gold-primary/20 transition-all duration-500 shadow-xl bg-gradient-to-br from-gold-primary/10 via-luxury-black/60 to-luxury-black/80 cursor-pointer"
             >
-              {/* Background image loaded lazily */}
-              <img
-                src={card.image}
-                alt={card.title}
-                referrerPolicy="no-referrer"
-                className="absolute inset-0 w-full h-full object-cover -z-10 group-hover:scale-110 filter brightness-[0.35] group-hover:brightness-[0.45] transition-all duration-[2s] cubic-bezier(0.16, 1, 0.3, 1)"
-              />
+              {/* Glowing gold line decoration */}
+              <div className="absolute top-0 bottom-0 right-0 w-1.5 bg-gold-primary/40" />
 
-              {/* Shimmer/Reflection overlay effect */}
-              <div className="absolute inset-0 bg-gradient-to-tr from-gold-primary/0 via-gold-primary/5 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 -z-5" />
-
-              {/* Glowing Line at top of card */}
-              <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-gold-primary/30 to-transparent opacity-60 group-hover:via-gold-primary/80 transition-all duration-700" />
-
-              {/* Content */}
-              <div className="relative z-10 space-y-3">
-                <h3 className="text-xl md:text-2xl font-light text-white group-hover:text-gold-primary transition-colors duration-500 flex items-center justify-between">
-                  <span>{card.title}</span>
-                  <span className="text-gold-primary opacity-0 group-hover:opacity-100 group-hover:translate-x-[-4px] transition-all duration-500 text-sm">←</span>
-                </h3>
-                <p className="text-[11px] md:text-xs text-gray-400 font-light leading-relaxed group-hover:text-gray-300 transition-colors duration-500">
-                  {card.description}
-                </p>
+              {/* Content overlay */}
+              <div className="absolute inset-0 p-6 flex flex-col justify-center items-center text-center">
+                <motion.h3
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.1 + 0.3, duration: 0.6 }}
+                  className="text-xl md:text-2xl font-light text-white"
+                >
+                  {card.title}
+                </motion.h3>
               </div>
-
-              {/* Fine subtle borders glow */}
-              <div className="absolute inset-0 border border-white/0 group-hover:border-gold-primary/10 rounded-[24px] transition-all duration-700 pointer-events-none" />
             </motion.div>
           ))}
         </div>

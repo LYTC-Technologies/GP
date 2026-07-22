@@ -2,9 +2,17 @@ import React from "react";
 import { motion } from "motion/react";
 import { Product, CartItem } from "../types";
 
+interface MenuItem {
+  id: number;
+  name: string;
+  price: number;
+  category: string;
+}
+
 interface CategoryProductListProps {
   category: "restaurant" | "drinks" | "room_service";
   products: Product[];
+  menuItems: MenuItem[];
   isLoading: boolean;
   onAddToCart: (product: Product) => void;
   onBack: () => void;
@@ -15,12 +23,15 @@ interface CategoryProductListProps {
 export default function CategoryProductList({
   category,
   products,
+  menuItems,
   isLoading,
   onAddToCart,
   onBack,
   onOpenCart,
   cart
 }: CategoryProductListProps) {
+  const formatPrice = (price: number) => price.toFixed(1);
+
   const totalCartItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   const categoryNames = {
@@ -29,7 +40,14 @@ export default function CategoryProductList({
     room_service: "خدمة الجناح المباشرة"
   };
 
-  const filteredProducts = products.filter(p => p.category === category);
+  // Convert API category to app category
+  const apiCategoryMap = {
+    restaurant: "FOOD",
+    drinks: "DRINK",
+    room_service: "SERVICE"
+  };
+
+  const filteredMenuItems = menuItems.filter(item => item.category === apiCategoryMap[category]);
 
   return (
     <div className="min-h-screen bg-luxury-bg flex flex-col justify-between overflow-x-hidden relative">
@@ -80,7 +98,7 @@ export default function CategoryProductList({
               </div>
             ))}
           </div>
-        ) : filteredProducts.length === 0 ? (
+        ) : filteredMenuItems.length === 0 ? (
           /* Empty State */
           <div className="text-center py-24 space-y-4">
             <p className="text-gray-400 font-light">لا توجد منتجات متاحة في هذه الفئة حالياً</p>
@@ -88,13 +106,13 @@ export default function CategoryProductList({
         ) : (
           /* Products Grid */
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {filteredProducts.map((product, idx) => {
-              const inCartItem = cart.find(item => item.product.id === product.id);
+            {filteredMenuItems.map((menuItem, idx) => {
+              const inCartItem = cart.find(item => item.product.id === menuItem.id.toString());
               const inCartCount = inCartItem ? inCartItem.quantity : 0;
 
               return (
                 <motion.div
-                  key={product.id}
+                  key={menuItem.id}
                   initial={{ opacity: 0, y: 25 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.08, duration: 0.8, cubicBezier: [0.16, 1, 0.3, 1] }}
@@ -103,14 +121,8 @@ export default function CategoryProductList({
                 >
                   {/* Image container with hover zoom */}
                   <div className="relative w-full h-48 rounded-2xl overflow-hidden mb-4 bg-black/40">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      loading="lazy"
-                      referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-[1.2s] ease-out brightness-90 group-hover:brightness-95"
-                    />
-                    
+                    <div className="w-full h-full bg-gradient-to-br from-gold-primary/10 via-luxury-black/60 to-luxury-black/80" />
+
                     {/* Golden subtle aura decoration on card image */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-60" />
                     
@@ -126,22 +138,26 @@ export default function CategoryProductList({
                   <div className="flex-1 flex flex-col justify-between space-y-3">
                     <div className="space-y-1">
                       <h3 className="text-xs font-light text-white group-hover:text-gold-primary transition-colors duration-300">
-                        {product.name}
+                        {menuItem.name}
                       </h3>
-                      <p className="text-[10px] text-gray-500 font-light leading-relaxed line-clamp-3">
-                        {product.description}
-                      </p>
                     </div>
 
                     {/* Pricing & Add Trigger */}
                     <div className="flex items-center justify-between pt-2">
                       <span className="text-xs text-gold-primary font-sans font-medium tracking-wide">
-                        {product.price} ر.س
+                        {formatPrice(menuItem.price)} ر.س
                       </span>
                       
                       <motion.button
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => onAddToCart(product)}
+                        onClick={() => onAddToCart({
+                          id: menuItem.id.toString(),
+                          name: menuItem.name,
+                          price: menuItem.price,
+                          category: category,
+                          description: "",
+                          image: ""
+                        })}
                         className="btn-gold-outline rounded-xl px-3.5 py-1.5 text-[10px] tracking-wide font-medium"
                       >
                         + أضف للسلة

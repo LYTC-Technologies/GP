@@ -1,21 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "motion/react";
 import { CartItem } from "../types";
+import CreateOrderModal from "./CreateOrderModal";
 
 interface OrdersViewProps {
   cart: CartItem[];
   onOpenCart: () => void;
   onSelectCategory: (category: "restaurant" | "drinks" | "room_service") => void;
   onBack: () => void;
+  roomNumber: string;
+  onAddToCart: (item: { id: string; name: string; price: number; category: string; description: string; image: string }) => void;
 }
 
 export default function OrdersView({
   cart,
   onOpenCart,
   onSelectCategory,
-  onBack
+  onBack,
+  roomNumber,
+  onAddToCart
 }: OrdersViewProps) {
   const totalCartItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const [isCreateOrderModalOpen, setIsCreateOrderModalOpen] = useState(false);
 
   const categories = [
     {
@@ -45,9 +51,10 @@ export default function OrdersView({
   ];
 
   return (
-    <div className="min-h-screen bg-luxury-bg flex flex-col justify-between overflow-x-hidden relative">
-      {/* Top Header Bar */}
-      <header className="relative z-20 px-6 py-6 border-b border-white/5 bg-luxury-black/40 backdrop-blur-md flex items-center justify-between">
+    <>
+      <div className="min-h-screen bg-luxury-bg flex flex-col justify-between overflow-x-hidden relative">
+        {/* Top Header Bar */}
+        <header className="relative z-20 px-6 py-6 border-b border-white/5 bg-luxury-black/40 backdrop-blur-md flex items-center justify-between">
         {/* Back Button */}
         <button
           onClick={onBack}
@@ -73,6 +80,14 @@ export default function OrdersView({
               {totalCartItems}
             </span>
           )}
+        </button>
+
+        {/* Create Order Button */}
+        <button
+          onClick={() => setIsCreateOrderModalOpen(true)}
+          className="text-xs text-white px-3 py-1.5 rounded-lg bg-gold-primary/20 hover:bg-gold-primary/30 transition-all duration-300 font-medium border border-gold-primary/30"
+        >
+          + طلب جديد
         </button>
       </header>
 
@@ -128,5 +143,15 @@ export default function OrdersView({
       {/* Simple footer spacer */}
       <div className="py-4" />
     </div>
+
+    {/* Create Order Modal */}
+    <CreateOrderModal
+      isOpen={isCreateOrderModalOpen}
+      onClose={() => setIsCreateOrderModalOpen(false)}
+      roomNumber={roomNumber}
+      onAddToCart={onAddToCart}
+      isLoading={false}
+    />
+  </>
   );
 }
