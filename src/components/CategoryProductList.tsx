@@ -122,22 +122,14 @@ export default function CategoryProductList({
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.08, duration: 0.8, cubicBezier: [0.16, 1, 0.3, 1] }}
                   whileHover={{ y: -6 }}
-                  className="glass-panel p-4 rounded-[24px] border border-gold-primary/10 hover:border-gold-primary/25 transition-all duration-500 shadow-lg flex flex-col justify-between group overflow-hidden"
+                  className="glass-panel p-4 rounded-[24px] border border-gold-primary/10 hover:border-gold-primary/25 transition-all duration-500 shadow-lg flex flex-col justify-between group overflow-hidden relative"
                 >
-                  {/* Image container with hover zoom */}
-                  <div className="relative w-full h-48 rounded-2xl overflow-hidden mb-4 bg-black/40">
-                    <div className="w-full h-full bg-gradient-to-br from-gold-primary/10 via-luxury-black/60 to-luxury-black/80" />
-
-                    {/* Golden subtle aura decoration on card image */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-60" />
-                    
-                    {/* Tag badge for in-cart items count */}
-                    {inCartCount > 0 && (
-                      <div className="absolute top-3 left-3 bg-gold-primary text-black text-[9px] font-sans font-bold px-2 py-1 rounded shadow-md">
-                        <span>{inCartCount} في السلة</span>
-                      </div>
-                    )}
-                  </div>
+                  {/* Tag badge for in-cart items count */}
+                  {inCartCount > 0 && (
+                    <div className="absolute top-3 right-3 bg-gold-primary text-black text-[9px] font-sans font-bold px-2 py-1 rounded shadow-md">
+                      <span>{inCartCount} في السلة</span>
+                    </div>
+                  )}
 
                   {/* Title and descriptions */}
                   <div className="flex-1 flex flex-col justify-between space-y-3">
