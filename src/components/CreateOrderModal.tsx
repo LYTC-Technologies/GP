@@ -117,8 +117,10 @@ export default function CreateOrderModal({
     }
   };
 
-  const formatPrice = (price: number) => {
-    return price.toFixed(1);
+  const formatPrice = (price: number | string) => {
+    const numPrice = typeof price === 'string' ? parseFloat(price) : price;
+    if (isNaN(numPrice)) return "0.0";
+    return numPrice.toFixed(1);
   };
 
   const getCategoryName = (category: string) => {
