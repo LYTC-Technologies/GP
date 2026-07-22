@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "motion/react";
 import { Product, CartItem } from "../types";
+import ThemeToggle from "./ThemeToggle";
 
 interface MenuItem {
   id: number;
@@ -72,18 +73,21 @@ export default function CategoryProductList({
           <p className="text-[9px] text-gold-primary tracking-widest font-sans uppercase">{category}</p>
         </div>
 
-        {/* Cart Trigger */}
-        <button
-          onClick={onOpenCart}
-          className="text-xs text-gold-primary px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-300 font-medium"
-        >
-          سلة الطلبات
-          {totalCartItems > 0 && (
-            <span className="mr-1.5 font-sans bg-gold-primary text-black px-1.5 py-0.5 rounded text-[10px] font-bold">
-              {totalCartItems}
-            </span>
-          )}
-        </button>
+        {/* Cart Trigger & Theme Toggle */}
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <button
+            onClick={onOpenCart}
+            className="text-xs text-gold-primary px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-300 font-medium"
+          >
+            سلة الطلبات
+            {totalCartItems > 0 && (
+              <span className="mr-1.5 font-sans bg-gold-primary text-black px-1.5 py-0.5 rounded text-[10px] font-bold">
+                {totalCartItems}
+              </span>
+            )}
+          </button>
+        </div>
       </header>
 
       {/* Grid Content */}

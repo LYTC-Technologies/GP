@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { SpecialRequestCategory, SpecialRequest } from "../types";
+import ThemeToggle from "./ThemeToggle";
 
 interface SpecialOffer {
   id: number;
@@ -113,8 +114,8 @@ export default function SpecialRequestsView({
           <p className="text-[9px] text-gold-primary tracking-widest font-sans">SPECIAL SERVICE</p>
         </div>
 
-        {/* Spacing alignment placeholder */}
-        <div className="w-10" />
+        {/* Theme Toggle */}
+        <ThemeToggle />
       </header>
 
       {/* Main content body */}

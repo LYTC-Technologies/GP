@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "motion/react";
+import ThemeToggle from "./ThemeToggle";
 
 interface Offer {
   id: number;
@@ -32,8 +33,8 @@ export default function OffersView({ offers, isLoading, onBack }: OffersViewProp
           <p className="text-[9px] text-gold-primary tracking-widest font-sans">SPECIAL OFFERS</p>
         </div>
 
-        {/* Spacer */}
-        <div className="w-10" />
+        {/* Theme Toggle */}
+        <ThemeToggle />
       </header>
 
       {/* Offers Content */}

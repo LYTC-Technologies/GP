@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { motion } from "motion/react";
 import { CartItem } from "../types";
 import CreateOrderModal from "./CreateOrderModal";
+import ThemeToggle from "./ThemeToggle";
 
 interface OrdersViewProps {
   cart: CartItem[];
@@ -90,6 +91,11 @@ export default function OrdersView({
           + طلب جديد
         </button>
       </header>
+
+      {/* Theme Toggle below header top left */}
+      <div className="absolute top-20 left-6 z-10">
+        <ThemeToggle />
+      </div>
 
       {/* Categories Content */}
       <main className="flex-1 w-full max-w-5xl mx-auto px-6 py-10 flex flex-col justify-center space-y-6 md:space-y-8">

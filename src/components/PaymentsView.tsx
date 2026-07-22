@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "motion/react";
 import { Order } from "../types";
+import ThemeToggle from "./ThemeToggle";
 
 interface StayDetails {
   roomCharge: number;
@@ -44,8 +45,8 @@ export default function PaymentsView({ stayDetails, isLoading, orders, onBack, o
           <p className="text-[9px] text-gold-primary tracking-widest font-sans">PAYMENTS & BILLING</p>
         </div>
 
-        {/* Spacer */}
-        <div className="w-10" />
+        {/* Theme Toggle */}
+        <ThemeToggle />
       </header>
 
       {/* Payments Content */}

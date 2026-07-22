@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import ThemeToggle from "./ThemeToggle";
 
 interface RatingViewProps {
   onSubmitRating: (stars: number, notes: string) => Promise<boolean>;
@@ -86,8 +87,8 @@ export default function RatingView({ onSubmitRating, onBack }: RatingViewProps) 
           <p className="text-[9px] text-gold-primary tracking-widest font-sans">FEEDBACK & RATING</p>
         </div>
 
-        {/* Spacer */}
-        <div className="w-10" />
+        {/* Theme Toggle */}
+        <ThemeToggle />
       </header>
 
       {/* Rating Content */}

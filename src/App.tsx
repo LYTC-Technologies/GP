@@ -225,7 +225,7 @@ function AppContent() {
         // Add order to invoiced orders (will be shown in invoice when delivered)
         setInvoicedOrders(prev => new Set(prev).add(res.orderId.toString()));
 
-        alert(`تم إرسال طلبك بنجاح!\n\nرقم الطلب: ${res.orderId}\nعدد العناصر: ${itemCount}\nالإجمالي: ${totalAmount.toFixed(1)} ر.س\n\nيمكنك متابعة حالة الطلب في قسم الطلبات.`);
+        alert(`تم إرسال طلبك بنجاح!\n\nرقم الطلب: ${res.orderId}\nعدد العناصر: ${itemCount}\nالإجمالي: ${totalAmount.toFixed(1)} ر.س\n\nيمكنك متابعة حالة الطلب في قسم المدفوعات.`);
 
         setCart([]); // Clear cart
         setIsCartOpen(false); // Close cart
@@ -233,8 +233,8 @@ function AppContent() {
         // Invalidate and refetch orders
         await queryClientRef.invalidateQueries({ queryKey: ["orders", session.roomNumber] });
 
-        // Open order history to let them track progress
-        setIsOrderHistoryOpen(true);
+        // Navigate to payments page
+        navigate("#payments");
       }
     } catch (err) {
       console.error("Failed to place order:", err);
