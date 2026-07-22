@@ -1,15 +1,19 @@
 {
-  "theme": "dark_mode",
+  "theme": "premium_luxury_hotel",
   "colors": {
-    "primary_gold": "#dfba73",
-    "secondary_gold": "#cbba53",
-    "background": "#080808",
-    "black": "#000000",
-    "glass": "rgba(255, 255, 255, 0.05)",
-    "border": "rgba(223, 186, 115, 0.25)",
-    "text_primary": "#ffffff",
-    "text_secondary": "#9ca3af",
-    "text_muted": "#6b7280"
+    "primary_gold": "#C9A35B",
+    "secondary_gold": "#B88A44",
+    "accent_gold": "#D6B574",
+    "background": "#F7F5F1",
+    "secondary_background": "#F2EEE8",
+    "card_background": "rgba(255,255,255,0.75)",
+    "glass": "rgba(255,255,255,0.65)",
+    "border": "rgba(201,163,91,0.20)",
+    "text_primary": "#171717",
+    "text_secondary": "#555555",
+    "text_muted": "#8A8A8A",
+    "success": "#3F8C5A",
+    "danger": "#B64545"
   },
   "typography": {
     "font_family": "IBM Plex Sans Arabic, Alexandria, ui-sans-serif, system-ui, sans-serif",
@@ -31,30 +35,38 @@
   },
   "components": {
     "glass_panel": {
-      "background": "rgba(255, 255, 255, 0.03)",
+      "background": "rgba(255,255,255,0.65)",
       "backdrop_filter": "blur(20px)",
-      "border": "1px solid rgba(223, 186, 115, 0.15)",
+      "border": "1px solid rgba(201,163,91,0.15)",
       "border_radius": "24px"
     },
     "buttons": {
       "gold_button": {
-        "background": "linear-gradient(135deg, #dfba73 0%, #b89146 100%)",
-        "color": "#000000",
-        "border": "1px solid #dfba73",
+        "background": "linear-gradient(135deg, #D6B574 0%, #B88A44 100%)",
+        "color": "#111111",
+        "border": "1px solid #C9A35B",
         "font_weight": 500,
-        "letter_spacing": "0.02em"
+        "letter_spacing": "0.02em",
+        "hover_scale": "1.02"
       },
       "gold_outline": {
         "background": "transparent",
-        "color": "#dfba73",
-        "border": "1px solid rgba(223, 186, 115, 0.4)"
+        "color": "#C9A35B",
+        "border": "1px solid rgba(201,163,91,0.4)",
+        "hover_background": "rgba(201,163,91,0.08)"
       }
     },
     "cards": {
       "border_radius": "24px",
-      "border": "1px solid rgba(223, 186, 115, 0.1)",
-      "hover_border": "rgba(223, 186, 115, 0.25)",
-      "shadow": "0 10px 30px rgba(0, 0, 0, 0.3)"
+      "border": "1px solid rgba(201,163,91,0.18)",
+      "hover_border": "rgba(201,163,91,0.25)",
+      "shadow": "0 12px 30px rgba(0,0,0,0.08)"
+    },
+    "inputs": {
+      "background": "rgba(255,255,255,0.8)",
+      "border": "rgba(201,163,91,0.2)",
+      "placeholder": "#8A8A8A",
+      "focus_border": "#C9A35B"
     }
   },
   "animations": {
@@ -68,9 +80,9 @@
   },
   "scrollbar": {
     "width": "6px",
-    "track": "#000000",
-    "thumb": "#dfba73",
-    "thumb_hover": "#cbba53"
+    "track": "#EEEAE4",
+    "thumb": "#C9A35B",
+    "thumb_hover": "#B88A44"
   },
   "spacing": {
     "xs": "4px",
