@@ -30,7 +30,10 @@ export default function CategoryProductList({
   onOpenCart,
   cart
 }: CategoryProductListProps) {
-  const formatPrice = (price: number) => price.toFixed(1);
+  const formatPrice = (price: number | undefined | null) => {
+    if (price === undefined || price === null || isNaN(price)) return "0.0";
+    return price.toFixed(1);
+  };
 
   const totalCartItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 

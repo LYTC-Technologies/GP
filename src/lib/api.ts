@@ -246,16 +246,11 @@ export const apiService = {
     }
   },
 
-  // Get All Products
-  async getProducts(): Promise<Product[]> {
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    return products;
-  },
 
   // Get Special Request Categories
   async getSpecialRequestCategories(): Promise<SpecialRequestCategory[]> {
     await new Promise((resolve) => setTimeout(resolve, 200));
-    return specialRequestCategories;
+    return [];
   },
 
   // Submit Special Request

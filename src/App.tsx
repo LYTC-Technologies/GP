@@ -109,12 +109,6 @@ function AppContent() {
   }, [location.hash]);
 
   // Queries (TanStack Query)
-  
-  // Fetch products
-  const { data: products = [], isLoading: isProductsLoading } = useQuery<Product[]>({
-    queryKey: ["products"],
-    queryFn: apiService.getProducts,
-  });
 
   // Fetch special request categories
   const { data: requestCategories = [], isLoading: isCategoriesLoading } = useQuery({
@@ -453,9 +447,9 @@ function AppContent() {
           >
             <CategoryProductList
               category={activeScreen}
-              products={products}
+              products={[]}
               menuItems={menuItems}
-              isLoading={isProductsLoading}
+              isLoading={isLoadingMenuItems}
               onAddToCart={handleAddToCart}
               onBack={() => navigate("#orders")}
               onOpenCart={() => setIsCartOpen(true)}
