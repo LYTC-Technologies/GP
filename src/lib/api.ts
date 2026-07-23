@@ -167,13 +167,31 @@ export const apiService = {
     if (!roomNumber || !isValidRoom(roomNumber)) {
       throw new Error("رقم الغرفة غير صحيح. يرجى إدخال رقم غرفة صالح بين 100 و 999.");
     }
+
+    // Get real current date in Arabic format
+    const now = new Date();
+    const checkInDate = now.toLocaleDateString("ar-SA", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit"
+    });
+
+    // Calculate check-out date (7 days from now)
+    const checkOutDate = new Date(now);
+    checkOutDate.setDate(checkOutDate.getDate() + 7);
+    const checkOutDateStr = checkOutDate.toLocaleDateString("ar-SA", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit"
+    });
+
     return {
       roomNumber,
       guestName: "صاحب السمو والضيف الكريم",
       stayInfo: {
         villaName: `جناح فيلا مسك ${roomNumber}`,
-        checkIn: "٢٠٢٦/٠٧/١٨",
-        checkOut: "٢٠٢٦/٠٧/٢٥",
+        checkIn: checkInDate,
+        checkOut: checkOutDateStr,
         butlerName: "ميخائيل",
         conciergeNumber: "+٩٦٦ ٥٠ ٠٠٠ ٠٠٠٠",
         capacity: "شخصين بالغين",
@@ -187,10 +205,28 @@ export const apiService = {
     if (!roomNumber || !isValidRoom(roomNumber)) {
       throw new Error("الرجاء تسجيل الدخول أولاً");
     }
+
+    // Get real current date in Arabic format
+    const now = new Date();
+    const checkInDate = now.toLocaleDateString("ar-SA", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit"
+    });
+
+    // Calculate check-out date (7 days from now)
+    const checkOutDate = new Date(now);
+    checkOutDate.setDate(checkOutDate.getDate() + 7);
+    const checkOutDateStr = checkOutDate.toLocaleDateString("ar-SA", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit"
+    });
+
     return {
       villaName: `جناح فيلا مسك ${roomNumber}`,
-      checkIn: "٢٠٢٦/٠٧/١٨",
-      checkOut: "٢٠٢٦/٠٧/٢٥",
+      checkIn: checkInDate,
+      checkOut: checkOutDateStr,
       butlerName: "ميخائيل",
       conciergeNumber: "+٩٦٦ ٥٠ ٠٠٠ ٠٠٠٠",
       capacity: "شخصين بالغين",

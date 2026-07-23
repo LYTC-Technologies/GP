@@ -395,6 +395,19 @@ function AppContent() {
       // Call checkout API
       await apiService.checkout(session.roomNumber);
 
+      // Add all delivered orders to invoiced orders for final bill
+      const allOrders = JSON.parse(localStorage.getItem("vms_orders_db") || "[]");
+      const deliveredOrders = allOrders.filter((order: Order) =>
+        order.roomNumber === session.roomNumber && order.status === "تم التوصيل"
+      );
+
+      const deliveredOrderIds = new Set<string>();
+      deliveredOrders.forEach((order: Order) => {
+        deliveredOrderIds.add(order.id);
+      });
+
+      setInvoicedOrders(prev => new Set([...prev, ...deliveredOrderIds]));
+
       // Navigate to payments page to show the bill
       navigate("#payments");
 
