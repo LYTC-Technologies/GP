@@ -222,6 +222,24 @@ function AppContent() {
         const totalAmount = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
         const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
+        // Save order to localStorage with correct prices
+        const orders = JSON.parse(localStorage.getItem("vms_orders_db") || "[]");
+        const newOrder = {
+          id: res.orderId.toString(),
+          roomNumber: session.roomNumber,
+          total: totalAmount,
+          items: cart.map((item) => ({
+            productId: item.product.id,
+            name: item.product.name,
+            quantity: item.quantity,
+            price: item.product.price
+          })),
+          status: "قيد الانتظار",
+          createdAt: new Date().toLocaleTimeString("ar-SA", { hour: "2-digit", minute: "2-digit" })
+        };
+        orders.push(newOrder);
+        localStorage.setItem("vms_orders_db", JSON.stringify(orders));
+
         // Add order to invoiced orders (will be shown in invoice when delivered)
         setInvoicedOrders(prev => new Set(prev).add(res.orderId.toString()));
 

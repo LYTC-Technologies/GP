@@ -411,60 +411,20 @@ export const apiService = {
 
       console.log("Create order response status:", response.status);
 
-      let orderId: number;
-
       if (!response.ok) {
         console.error("Failed to create order, status:", response.status);
         // Return mock order ID to allow UI to proceed
-        orderId = Math.floor(Math.random() * 9000) + 1000;
-      } else {
-        const data = await response.json();
-        console.log("Order created successfully:", data);
-        orderId = data.id;
+        const mockOrderId = Math.floor(Math.random() * 9000) + 1000;
+        return { success: true, orderId: mockOrderId };
       }
 
-      // Save order to localStorage for display in payments
-      const orders = getLocalOrders();
-      const newOrder: Order = {
-        id: orderId.toString(),
-        roomNumber,
-        total: 0,
-        items: items.map(item => ({
-          productId: item.menuItemId.toString(),
-          name: `Item ${item.menuItemId}`,
-          quantity: item.quantity,
-          price: 0 // Will be updated when real data is available
-        })),
-        status: "قيد الانتظار",
-        createdAt: new Date().toLocaleTimeString("ar-SA", { hour: "2-digit", minute: "2-digit" })
-      };
-      orders.push(newOrder);
-      saveLocalOrders(orders);
-
-      return { success: true, orderId };
+      const data = await response.json();
+      console.log("Order created successfully:", data);
+      return { success: true, orderId: data.id };
     } catch (error) {
       console.error("Error creating order:", error);
       // Return mock order ID to allow UI to proceed
       const mockOrderId = Math.floor(Math.random() * 9000) + 1000;
-
-      // Save mock order to localStorage for display in payments
-      const orders = getLocalOrders();
-      const newOrder: Order = {
-        id: mockOrderId.toString(),
-        roomNumber,
-        total: 0,
-        items: items.map(item => ({
-          productId: item.menuItemId.toString(),
-          name: `Item ${item.menuItemId}`,
-          quantity: item.quantity,
-          price: 0
-        })),
-        status: "قيد الانتظار",
-        createdAt: new Date().toLocaleTimeString("ar-SA", { hour: "2-digit", minute: "2-digit" })
-      };
-      orders.push(newOrder);
-      saveLocalOrders(orders);
-
       return { success: true, orderId: mockOrderId };
     }
   },
