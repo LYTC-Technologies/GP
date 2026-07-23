@@ -386,6 +386,19 @@ function AppContent() {
     }
   };
 
+  const handleFinalCheckout = () => {
+    if (!session) return;
+
+    // Show thank you message
+    alert(`شكراً لتشريفك لنا!\n\nنتمنى أن تكون قد استمتعت بإقامتك في فيلا مسك.\nنتطلع لاستقبالك مرة أخرى قريباً.`);
+
+    // Clear session and navigate to login
+    setSession(null);
+    setCart([]);
+    setInvoicedOrders(new Set());
+    navigate("#login");
+  };
+
   return (
     <div className="min-h-screen relative" style={{ backgroundColor: 'var(--color-luxury-bg)', color: 'var(--color-text-primary)' }}>
       {/* App transitions and container structure */}
@@ -589,6 +602,7 @@ function AppContent() {
               orders={orders.filter(order => invoicedOrders.has(order.id))}
               onBack={() => navigate("#main")}
               onRemoveFromInvoice={handleRemoveFromInvoice}
+              onFinalCheckout={handleFinalCheckout}
             />
           </motion.div>
         )}

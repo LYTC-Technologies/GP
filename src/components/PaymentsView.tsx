@@ -19,9 +19,10 @@ interface PaymentsViewProps {
   orders: Order[];
   onBack: () => void;
   onRemoveFromInvoice?: (orderId: string) => void;
+  onFinalCheckout?: () => void;
 }
 
-export default function PaymentsView({ stayDetails, isLoading, orders, onBack, onRemoveFromInvoice }: PaymentsViewProps) {
+export default function PaymentsView({ stayDetails, isLoading, orders, onBack, onRemoveFromInvoice, onFinalCheckout }: PaymentsViewProps) {
   const formatPrice = (price: number | string) => {
     const numPrice = typeof price === 'string' ? parseFloat(price) : price;
     if (isNaN(numPrice)) return "0.0";
@@ -111,6 +112,19 @@ export default function PaymentsView({ stayDetails, isLoading, orders, onBack, o
                 </div>
               </div>
             </div>
+
+            {/* Checkout Button */}
+            {onFinalCheckout && (
+              <motion.button
+                whileTap={{ scale: 0.98 }}
+                onClick={onFinalCheckout}
+                className="w-full btn-gold py-4 rounded-xl text-center text-sm tracking-wider font-medium flex items-center justify-center space-x-2 space-x-reverse"
+              >
+                <span>خروج</span>
+                <span className="text-gold-primary/70">|</span>
+                <span>{formatPrice(stayDetails.totalCharge)} ر.س</span>
+              </motion.button>
+            )}
 
             {/* Orders Invoice */}
             {orders.length > 0 && (
