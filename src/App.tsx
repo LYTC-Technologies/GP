@@ -423,6 +423,25 @@ function AppContent() {
     navigate("#login");
   };
 
+  const handleMarkDelivered = (orderId: string) => {
+    // Update order status to delivered
+    const orders = JSON.parse(localStorage.getItem("vms_orders_db") || "[]");
+    const orderIndex = orders.findIndex((o: Order) => o.id === orderId);
+    if (orderIndex !== -1) {
+      orders[orderIndex].status = "تم التوصيل";
+      localStorage.setItem("vms_orders_db", JSON.stringify(orders));
+    }
+
+    // Invalidate orders query to refresh
+    queryClientRef.invalidateQueries({ queryKey: ["orders", session?.roomNumber] });
+
+    // Show "استمتع" message
+    alert("استمتع! ✨\n\nتم تحديث الفاتورة بإضافة سعر الطلب.");
+
+    // Navigate to ratings page
+    navigate("#rating");
+  };
+
   return (
     <div className="min-h-screen relative" style={{ backgroundColor: 'var(--color-luxury-bg)', color: 'var(--color-text-primary)' }}>
       {/* App transitions and container structure */}
@@ -627,6 +646,7 @@ function AppContent() {
               onBack={() => navigate("#main")}
               onRemoveFromInvoice={handleRemoveFromInvoice}
               onFinalCheckout={handleFinalCheckout}
+              onMarkDelivered={handleMarkDelivered}
             />
           </motion.div>
         )}

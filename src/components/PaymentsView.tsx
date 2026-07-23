@@ -20,9 +20,10 @@ interface PaymentsViewProps {
   onBack: () => void;
   onRemoveFromInvoice?: (orderId: string) => void;
   onFinalCheckout?: () => void;
+  onMarkDelivered?: (orderId: string) => void;
 }
 
-export default function PaymentsView({ stayDetails, isLoading, orders, onBack, onRemoveFromInvoice, onFinalCheckout }: PaymentsViewProps) {
+export default function PaymentsView({ stayDetails, isLoading, orders, onBack, onRemoveFromInvoice, onFinalCheckout, onMarkDelivered }: PaymentsViewProps) {
   const formatPrice = (price: number | string) => {
     const numPrice = typeof price === 'string' ? parseFloat(price) : price;
     if (isNaN(numPrice)) return "0.0";
@@ -145,6 +146,14 @@ export default function PaymentsView({ stayDetails, isLoading, orders, onBack, o
                             <span className="text-xs text-gray-500 block">الحالة</span>
                             <span className="text-gold-primary text-sm">{order.status}</span>
                           </div>
+                          {order.status !== "تم التوصيل" && onMarkDelivered && (
+                            <button
+                              onClick={() => onMarkDelivered(order.id)}
+                              className="text-[9px] bg-green-500/10 text-green-400 border border-green-500/20 px-2 py-1 rounded font-medium hover:bg-green-500/20 transition-colors"
+                            >
+                              تم التوصيل
+                            </button>
+                          )}
                           {onRemoveFromInvoice && (
                             <button
                               onClick={() => onRemoveFromInvoice(order.id)}
