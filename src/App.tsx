@@ -586,7 +586,7 @@ function AppContent() {
             <PaymentsView
               stayDetails={stayDetails}
               isLoading={isLoadingStayDetails}
-              orders={orders.filter(order => invoicedOrders.has(order.id) && order.status === "تم التوصيل")}
+              orders={orders.filter(order => invoicedOrders.has(order.id))}
               onBack={() => navigate("#main")}
               onRemoveFromInvoice={handleRemoveFromInvoice}
             />
