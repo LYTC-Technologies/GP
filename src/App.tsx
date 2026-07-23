@@ -24,6 +24,7 @@ import RatingView from "./components/RatingView";
 import OffersView from "./components/OffersView";
 import PaymentsView from "./components/PaymentsView";
 import ThemeToggle from "./components/ThemeToggle";
+import ThankYouCard from "./components/ThankYouCard";
 
 // Initialize TanStack Query Client
 const queryClient = new QueryClient({
@@ -96,6 +97,7 @@ function AppContent() {
   const [isOrderHistoryOpen, setIsOrderHistoryOpen] = useState(false);
   const [isCancellingId, setIsCancellingId] = useState<string | null>(null);
   const [isSubmittingCart, setIsSubmittingCart] = useState(false);
+  const [showThankYouCard, setShowThankYouCard] = useState(false);
 
   // Sync state to LocalStorage
   useEffect(() => {
@@ -407,8 +409,12 @@ function AppContent() {
   const handleFinalCheckout = () => {
     if (!session) return;
 
-    // Show thank you message
-    alert(`شكراً لتشريفك لنا!\n\nنتمنى أن تكون قد استمتعت بإقامتك في فيلا مسك.\nنتطلع لاستقبالك مرة أخرى قريباً.`);
+    // Show thank you card
+    setShowThankYouCard(true);
+  };
+
+  const handleThankYouCardClose = () => {
+    setShowThankYouCard(false);
 
     // Clear session and navigate to login
     setSession(null);
@@ -642,6 +648,12 @@ function AppContent() {
         onAcknowledgeOrder={handleAcknowledgeOrder}
         isCancellingId={isCancellingId}
         isLoadingOrders={isOrdersLoading}
+      />
+
+      {/* Thank You Card */}
+      <ThankYouCard
+        isVisible={showThankYouCard}
+        onClose={handleThankYouCardClose}
       />
     </div>
   );
