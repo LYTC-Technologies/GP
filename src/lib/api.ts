@@ -446,4 +446,24 @@ export const apiService = {
 
     return { success: true };
   },
+
+  // Checkout (Check out from room)
+  async checkout(roomNumber: string): Promise<{ success: boolean; checkOutTime: string }> {
+    const url = new URL(`${API_BASE_URL}/api/guest/stays/checkout`);
+    url.searchParams.append("roomNumber", roomNumber);
+
+    const response = await fetch(url.toString(), {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to checkout");
+    }
+
+    const data = await response.json();
+    return { success: true, checkOutTime: data.checkOutTime || new Date().toISOString() };
+  },
 };

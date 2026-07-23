@@ -368,6 +368,24 @@ function AppContent() {
     navigate("#login");
   };
 
+  const handleRoomCheckout = async () => {
+    if (!session) return;
+
+    try {
+      // Call checkout API
+      await apiService.checkout(session.roomNumber);
+
+      // Navigate to payments page to show the bill
+      navigate("#payments");
+
+      // Invalidate stay details to refresh checkout time
+      await queryClientRef.invalidateQueries({ queryKey: ["stayDetails", session.roomNumber] });
+    } catch (error) {
+      console.error("Checkout failed:", error);
+      alert("حدث خطأ أثناء إتمام إجراءات المغادرة. يرجى المحاولة مرة أخرى.");
+    }
+  };
+
   return (
     <div className="min-h-screen relative" style={{ backgroundColor: 'var(--color-luxury-bg)', color: 'var(--color-text-primary)' }}>
       {/* App transitions and container structure */}
@@ -444,6 +462,7 @@ function AppContent() {
               onOpenCart={() => setIsCartOpen(true)}
               onNavigate={(screen) => navigate(`#${screen}`)}
               onLogout={handleLogout}
+              onCheckout={handleRoomCheckout}
               activeOrdersCount={activeOrdersCount}
               onOpenOrderHistory={() => setIsCartOpen(true)}
               offers={offers}

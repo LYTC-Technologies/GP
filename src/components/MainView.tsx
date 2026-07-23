@@ -12,6 +12,7 @@ interface MainViewProps {
   onOpenCart: () => void;
   onNavigate: (screen: "orders" | "special_requests" | "rating" | "offers" | "payments") => void;
   onLogout: () => void;
+  onCheckout: () => void;
   activeOrdersCount: number;
   onOpenOrderHistory: () => void;
   offers: { id: number; title: string; description: string }[];
@@ -31,6 +32,7 @@ export default function MainView({
   onOpenCart,
   onNavigate,
   onLogout,
+  onCheckout,
   activeOrdersCount,
   onOpenOrderHistory,
   offers,
@@ -59,6 +61,12 @@ export default function MainView({
       title: "تقييم الإقامة في المنتجع",
       description: "مشاركتنا انطباعك وتقييمك يساعدنا على تقديم الخدمة الاستثنائية التي تليق بتطلعاتك الراقية",
       target: "rating" as const
+    },
+    {
+      id: "checkout",
+      title: "مغادرة الغرفة",
+      description: "إتمام إجراءات المغادرة وعرض الفاتورة النهائية مع تفاصيل جميع الخدمات المستفادة",
+      target: "checkout" as const
     }
   ];
 
@@ -144,7 +152,7 @@ export default function MainView({
         </div>
 
         {/* Massive Card Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 flex-1 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 flex-1 items-stretch">
           {cards.map((card, idx) => (
             <motion.div
               key={card.id}
@@ -152,7 +160,7 @@ export default function MainView({
               animate={{ opacity: 1, x: 0 }}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              onClick={() => onNavigate(card.target)}
+              onClick={() => card.target === "checkout" ? onCheckout() : onNavigate(card.target)}
               transition={{ delay: idx * 0.1, duration: 0.9, cubicBezier: [0.16, 1, 0.3, 1] }}
               className="relative h-48 md:h-60 rounded-2xl overflow-hidden border border-white/5 hover:border-gold-primary/20 transition-all duration-500 shadow-xl bg-gradient-to-br from-gold-primary/10 via-luxury-black/60 to-luxury-black/80 cursor-pointer"
             >
