@@ -263,11 +263,36 @@ export const apiService = {
     return { success: true, request: newRequest };
   },
 
-  // Get Room's Special Requests (local storage)
+  // Get Room's Special Requests from API: GET /api/guest/stays/special-orders?roomNumber=xxx
   async getSpecialRequests(roomNumber: string): Promise<SpecialRequest[]> {
-    await new Promise((resolve) => setTimeout(resolve, 200));
-    const requests = getLocalRequests();
-    return requests.filter((r) => r.roomNumber === roomNumber);
+    const url = new URL(`${API_BASE_URL}/api/guest/stays/special-orders`);
+    url.searchParams.append("roomNumber", roomNumber);
+
+    try {
+      const response = await fetch(url.toString(), {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!response.ok) {
+        console.error("Failed to fetch special requests, status:", response.status);
+        return [];
+      }
+
+      const data = await response.json();
+
+      // Map API SpecialOrderResponse to local SpecialRequest type
+      return (data || []).map((item: any) => ({
+        id: String(item.id),
+        roomNumber: roomNumber,
+        category: item.specialOffer?.title || "طلب خاص",
+        notes: item.specialOffer?.description || "",
+        createdAt: item.createdAt || "",
+      }));
+    } catch (error) {
+      console.error("Error fetching special requests:", error);
+      return [];
+    }
   },
 
   // Get Special Offers from API: GET /api/guest/special-offers?pageable=...
