@@ -18,17 +18,24 @@ export default function RatingView({ onSubmitRating, onBack }: RatingViewProps) 
     if (isSubmitting) return;
 
     setIsSubmitting(true);
-    const success = await onSubmitRating(stars, notes);
-    setIsSubmitting(false);
-
-    if (success) {
-      setShowSuccess(true);
-      setNotes("");
-      setStars(5);
-      setTimeout(() => {
-        setShowSuccess(false);
-        onBack(); // Automatically return to main screen after appreciation
-      }, 3000);
+    try {
+      const success = await onSubmitRating(stars, notes);
+      if (success) {
+        setShowSuccess(true);
+        setNotes("");
+        setStars(5);
+        setTimeout(() => {
+          setShowSuccess(false);
+          onBack();
+        }, 3000);
+      } else {
+        alert("فشل إرسال التقييم. يرجى المحاولة مرة أخرى.");
+      }
+    } catch (err) {
+      console.error("Rating submit error:", err);
+      alert("حدث خطأ أثناء إرسال التقييم. يرجى المحاولة مرة أخرى.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
