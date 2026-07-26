@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import ThemeToggle from "./ThemeToggle";
 
 interface RatingViewProps {
   onSubmitRating: (stars: number, notes: string) => Promise<boolean>;
@@ -49,46 +48,52 @@ export default function RatingView({ onSubmitRating, onBack }: RatingViewProps) 
               animate={{ scale: 1, opacity: 1, filter: "blur(0px)" }}
               exit={{ scale: 0.95, opacity: 0 }}
               transition={{ duration: 0.7, ease: "easeOut" }}
-              className="space-y-6 max-w-md flex flex-col items-center"
+              className="space-y-8 max-w-md flex flex-col items-center"
             >
-              {/* Luxury Gold Heart Pulsing */}
-              <div className="h-16 w-16 rounded-full border border-gold-primary/30 flex items-center justify-center bg-gold-primary/10 text-gold-primary text-3xl shadow-[0_0_30px_rgba(223,186,115,0.25)] animate-pulse">
-                ♥
-              </div>
+              {/* Luxury Gold Checkmark Circle */}
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+                className="h-20 w-20 rounded-full border-2 border-gold-primary/40 flex items-center justify-center bg-gold-primary/10 shadow-[0_0_40px_rgba(223,186,115,0.3)]"
+              >
+                <svg className="w-10 h-10 text-gold-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+              </motion.div>
 
-              <div className="space-y-3">
-                <h3 className="text-xl font-light text-primary tracking-wide">
-                  شكراً لتقديرك وتقييمك
+              <div className="space-y-4">
+                <h3 className="text-2xl font-semibold text-primary tracking-wide leading-relaxed">
+                  شكرا علي تقييمك لنا و تشرفنا بك
                 </h3>
-                <p className="text-xs text-gray-400 font-light leading-relaxed">
-                  ملاحظاتك الكريمة محل اهتمام بالغ لشركاء الخدمة وإدارة فيلا مسك. نسعى دوماً للرقي بخدماتنا لتفوق وتصنع فارق تطلعاتك.
+                <div className="h-[1.5px] w-20 mx-auto bg-gold-primary/40" />
+                <p className="text-sm text-gray-500 font-medium leading-loose">
+                  تقييمك يساعدنا على تقديم أفضل تجربة ضيافة فاخرة في فيلا مسك
                 </p>
               </div>
-
-              <div className="h-[1.5px] w-24 bg-gold-primary/30" />
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* Header Bar */}
-      <header className="relative z-20 px-6 py-6 border-b border-white/5 bg-luxury-black/40 backdrop-blur-md flex items-center justify-between">
+      <header className="relative z-20 px-6 py-6 border-b border-theme-subtle bg-overlay-header backdrop-blur-md flex items-center justify-between">
         {/* Back Button */}
         <button
           onClick={onBack}
-          className="text-xs text-gray-400 hover-text-primary transition-colors"
+          className="text-sm text-gray-500 hover:text-primary transition-colors font-medium"
         >
           الرئيسية ←
         </button>
 
         {/* Title */}
         <div className="text-center">
-          <h2 className="text-base font-light text-primary">تقييم الإقامة والخدمات</h2>
-          <p className="text-[9px] text-gold-primary tracking-widest font-sans">FEEDBACK & RATING</p>
+          <h2 className="text-base font-semibold text-primary">تقييم الإقامة والخدمات</h2>
+          <p className="text-[10px] text-gold-primary tracking-widest font-semibold">FEEDBACK & RATING</p>
         </div>
 
-        {/* Theme Toggle */}
-        <ThemeToggle />
+        {/* Spacer for layout balance */}
+        <div className="w-16" />
       </header>
 
       {/* Rating Content */}
@@ -99,15 +104,15 @@ export default function RatingView({ onSubmitRating, onBack }: RatingViewProps) 
           transition={{ duration: 0.8 }}
           className="glass-panel p-6 md:p-10 rounded-[24px] border border-gold-primary/15 shadow-2xl space-y-8 text-center"
         >
-          <div className="space-y-2">
-            <h3 className="text-lg font-light text-primary">ما مدى رضاك عن مستوى الضيافة؟</h3>
-            <p className="text-xs text-gray-400 font-light max-w-md mx-auto leading-relaxed">
-              تقييمك يسهم مباشرة في ضبط جودة التفاصيل ورعاية أدق متطلبات إقامتك الحالية والقادمة في منتجعات فيلا مسك
+          <div className="space-y-3">
+            <h3 className="text-xl font-semibold text-primary">ما مدى رضاك عن مستوى الضيافة؟</h3>
+            <p className="text-sm text-gray-500 font-medium max-w-md mx-auto leading-loose">
+              تقييمك يسهم مباشرة في ضبط جودة التفاصيل ورعاية أدق متطلبات إقامتك
             </p>
           </div>
 
           {/* Interactive Five Stars */}
-          <div className="flex justify-center items-center space-x-3 space-x-reverse py-4">
+          <div className="flex justify-center items-center space-x-4 space-x-reverse py-4">
             {[1, 2, 3, 4, 5].map((starIdx) => {
               const active = hoverStars !== null ? starIdx <= hoverStars : starIdx <= stars;
               return (
@@ -127,19 +132,19 @@ export default function RatingView({ onSubmitRating, onBack }: RatingViewProps) 
 
           {/* Rating description state text */}
           <div className="h-6">
-            <span className="text-[11px] text-gold-primary/80 font-medium tracking-wide">
-              {stars === 1 && "مخيب للآمال - سنقوم بالتواصل معك فوراً لتدارك الأمر"}
-              {stars === 2 && "مقبول - نتطلع للتحسين وسماع تفاصيل ملاحظاتك"}
-              {stars === 3 && "جيد - نسعى لتقديم خدمة أفضل في المستقبل"}
-              {stars === 4 && "رائع جداً - يسعدنا رضاك وسنسعى للامتياز التام"}
-              {stars === 5 && "استثنائي - تليق بمستوى فيلا مسك الفاخر"}
+            <span className="text-sm text-gold-primary font-semibold tracking-wide">
+              {stars === 1 && "مخيب للآمال - سنقوم بالتواصل معك فوراً"}
+              {stars === 2 && "مقبول - نتطلع للتحسين"}
+              {stars === 3 && "جيد - نسعى لتقديم خدمة أفضل"}
+              {stars === 4 && "رائع جداً - يسعدنا رضاك"}
+              {stars === 5 && "استثنائي - تليق بمستوى فيلا مسك"}
             </span>
           </div>
 
           {/* Custom review form */}
           <form onSubmit={handleSubmit} className="space-y-6 text-right">
             <div>
-              <label htmlFor="rating-notes" className="block text-[10px] text-gold-primary uppercase tracking-wider mb-2">
+              <label htmlFor="rating-notes" className="block text-xs text-gold-primary uppercase tracking-wider mb-3 font-semibold">
                 ملاحظات أو تعليقات إضافية (اختياري)
               </label>
               <textarea
@@ -147,8 +152,8 @@ export default function RatingView({ onSubmitRating, onBack }: RatingViewProps) 
                 rows={4}
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                placeholder="يسعدنا كتابة ملاحظاتك حول أي زميل في الخدمة أو تفاصيل نالت إعجابك أو نقاط تود منا تحسينها..."
-                className="w-full bg-luxury-black/60 rounded-xl p-4 border border-gold-primary/20 text-xs text-primary placeholder-gray-600 focus:outline-none transition-all duration-300"
+                placeholder="يسعدنا كتابة ملاحظاتك حول أي زميل في الخدمة أو تفاصيل نالت إعجابك..."
+                className="w-full bg-input-theme rounded-xl p-4 border border-gold-primary/20 text-sm text-primary placeholder-gray-500 focus:outline-none transition-all duration-300 font-medium leading-relaxed"
               />
             </div>
 
@@ -157,9 +162,9 @@ export default function RatingView({ onSubmitRating, onBack }: RatingViewProps) 
               whileTap={{ scale: 0.98 }}
               type="submit"
               disabled={isSubmitting}
-              className="w-full btn-gold py-3.5 text-xs font-medium rounded-xl flex items-center justify-center space-x-2 space-x-reverse disabled:opacity-50"
+              className="w-full btn-gold py-4 text-sm font-semibold rounded-xl flex items-center justify-center space-x-2 space-x-reverse disabled:opacity-50"
             >
-              <span>{isSubmitting ? "جاري إرسال التقييم..." : "إرسال التقييم الفاخر"}</span>
+              <span>{isSubmitting ? "جاري إرسال التقييم..." : "إرسال التقييم"}</span>
             </motion.button>
           </form>
         </motion.div>

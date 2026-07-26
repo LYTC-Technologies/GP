@@ -23,7 +23,6 @@ import SpecialRequestsView from "./components/SpecialRequestsView";
 import RatingView from "./components/RatingView";
 import OffersView from "./components/OffersView";
 import PaymentsView from "./components/PaymentsView";
-import ThemeToggle from "./components/ThemeToggle";
 import ThankYouCard from "./components/ThankYouCard";
 
 // Initialize TanStack Query Client
@@ -220,27 +219,9 @@ function AppContent() {
       }));
 
       const res = await apiService.createOrder(session.roomNumber, category, itemsPayload);
-      if (res.success) {
+      if (res.success && res.orderId > 0) {
         const totalAmount = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
         const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-
-        // Save order to localStorage with correct prices
-        const orders = JSON.parse(localStorage.getItem("vms_orders_db") || "[]");
-        const newOrder = {
-          id: res.orderId.toString(),
-          roomNumber: session.roomNumber,
-          total: totalAmount,
-          items: cart.map((item) => ({
-            productId: item.product.id,
-            name: item.product.name,
-            quantity: item.quantity,
-            price: item.product.price
-          })),
-          status: "قيد الانتظار",
-          createdAt: new Date().toLocaleTimeString("ar-SA", { hour: "2-digit", minute: "2-digit" })
-        };
-        orders.push(newOrder);
-        localStorage.setItem("vms_orders_db", JSON.stringify(orders));
 
         // Add order to invoiced orders (will be shown in invoice when delivered)
         setInvoicedOrders(prev => new Set(prev).add(res.orderId.toString()));
@@ -250,11 +231,13 @@ function AppContent() {
         setCart([]); // Clear cart
         setIsCartOpen(false); // Close cart
 
-        // Invalidate and refetch orders
+        // Invalidate and refetch orders from API
         await queryClientRef.invalidateQueries({ queryKey: ["orders", session.roomNumber] });
 
         // Navigate to payments page
         navigate("#payments");
+      } else {
+        alert("فشل إرسال الطلب. يرجى المحاولة مرة أخرى.");
       }
     } catch (err) {
       console.error("Failed to place order:", err);
@@ -297,7 +280,7 @@ function AppContent() {
 
     setIsCancellingId(orderId);
     try {
-      const res = await apiService.cancelOrder(orderId);
+      const res = await apiService.cancelOrder(orderId, session.roomNumber);
       if (res.success) {
         await queryClientRef.invalidateQueries({ queryKey: ["orders", session.roomNumber] });
         return true;
@@ -311,17 +294,13 @@ function AppContent() {
     }
   };
 
-  // Delete/dismiss order handler
+  // Delete/dismiss order handler (no API endpoint - just refresh the list)
   const handleDeleteOrder = async (orderId: string): Promise<boolean> => {
     if (!session) return false;
 
     try {
-      const res = await apiService.deleteOrder(orderId);
-      if (res.success) {
-        await queryClientRef.invalidateQueries({ queryKey: ["orders", session.roomNumber] });
-        return true;
-      }
-      return false;
+      await queryClientRef.invalidateQueries({ queryKey: ["orders", session.roomNumber] });
+      return true;
     } catch (err) {
       console.error("Failed to delete order:", err);
       return false;
@@ -368,7 +347,9 @@ function AppContent() {
     }
   };
 
-  const handleLoginSuccess = (guestSession: GuestSession) => {
+  const handleLoginSuccess = async (guestSession: GuestSession) => {
+    // Invalidate all previous queries to ensure fresh data for the new room
+    await queryClientRef.invalidateQueries();
     setSession(guestSession);
     navigate("#loading");
   };
@@ -381,10 +362,12 @@ function AppContent() {
     navigate("#main");
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    // Invalidate all queries so next login fetches fresh data (arrival time, etc.)
+    await queryClientRef.clear();
     setSession(null);
     setCart([]);
-    setInvoicedOrders(new Set()); // Clear invoice on checkout
+    setInvoicedOrders(new Set());
     navigate("#login");
   };
 
@@ -396,9 +379,9 @@ function AppContent() {
       await apiService.checkout(session.roomNumber);
 
       // Add all delivered orders to invoiced orders for final bill
-      const allOrders = JSON.parse(localStorage.getItem("vms_orders_db") || "[]");
-      const deliveredOrders = allOrders.filter((order: Order) =>
-        order.roomNumber === session.roomNumber && order.status === "تم التوصيل"
+      // Use the fetched orders from the query
+      const deliveredOrders = orders.filter(
+        (order: Order) => order.roomNumber === session.roomNumber && order.status === "تم التوصيل"
       );
 
       const deliveredOrderIds = new Set<string>();
@@ -437,19 +420,11 @@ function AppContent() {
   };
 
   const handleMarkDelivered = (orderId: string) => {
-    // Update order status to delivered
-    const orders = JSON.parse(localStorage.getItem("vms_orders_db") || "[]");
-    const orderIndex = orders.findIndex((o: Order) => o.id === orderId);
-    if (orderIndex !== -1) {
-      orders[orderIndex].status = "تم التوصيل";
-      localStorage.setItem("vms_orders_db", JSON.stringify(orders));
-    }
-
-    // Invalidate orders query to refresh
+    // Invalidate orders query to refresh from API
     queryClientRef.invalidateQueries({ queryKey: ["orders", session?.roomNumber] });
 
-    // Show "استمتع" message
-    alert("استمتع! ✨\n\nتم تحديث الفاتورة بإضافة سعر الطلب.");
+    // Show message
+    alert("استمتع!\n\nتم تحديث الفاتورة بإضافة سعر الطلب.");
 
     // Navigate to ratings page
     navigate("#rating");
@@ -676,6 +651,7 @@ function AppContent() {
         isSubmitting={isSubmittingCart}
         orders={orders}
         specialRequests={specialRequests}
+        specialOrders={specialOrders}
         onCancelOrder={handleCancelOrder}
         onDeleteOrder={handleDeleteOrder}
         onAcknowledgeOrder={handleAcknowledgeOrder}

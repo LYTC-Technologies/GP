@@ -2,6 +2,13 @@ import React from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { CartItem, Order, SpecialRequest } from "../types";
 
+interface SpecialOrder {
+  id: number;
+  specialOffer: { id: number; title: string; description: string };
+  agreedPrice: number;
+  createdAt: string;
+}
+
 interface CartDrawerProps {
   isOpen: boolean;
   onClose: () => void;
@@ -12,6 +19,7 @@ interface CartDrawerProps {
   isSubmitting?: boolean;
   orders?: Order[];
   specialRequests?: SpecialRequest[];
+  specialOrders?: SpecialOrder[];
   onCancelOrder?: (orderId: string) => Promise<boolean>;
   onDeleteOrder?: (orderId: string) => Promise<boolean>;
   onAcknowledgeOrder?: (orderId: string) => void;
@@ -29,6 +37,7 @@ export default function CartDrawer({
   isSubmitting = false,
   orders = [],
   specialRequests = [],
+  specialOrders = [],
   onCancelOrder,
   onDeleteOrder,
   onAcknowledgeOrder,
@@ -43,10 +52,18 @@ export default function CartDrawer({
 
   const totalAmount = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
-  // Combine and sort both normal orders and special requests chronologically
+  // Combine normal orders, special requests, and API special orders chronologically
   const combinedPreviousItems = [
     ...orders.map((o) => ({ ...o, type: "order" as const })),
     ...specialRequests.map((r) => ({ ...r, type: "special_request" as const })),
+    ...specialOrders.map((so) => ({
+      id: so.id.toString(),
+      roomNumber: "",
+      category: so.specialOffer.title,
+      notes: so.specialOffer.description,
+      createdAt: so.createdAt,
+      type: "special_request" as const,
+    })),
   ].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 
   const hasAnyItems = cart.length > 0 || combinedPreviousItems.length > 0;
@@ -62,7 +79,7 @@ export default function CartDrawer({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.6 }}
             onClick={onClose}
-            className="fixed inset-0 z-40 bg-luxury-black/70 backdrop-blur-md"
+            className="fixed inset-0 z-40 bg-drawer-theme backdrop-blur-md"
           />
 
           {/* Left-aligned Cart Drawer */}
@@ -71,17 +88,17 @@ export default function CartDrawer({
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 180 }}
-            className="fixed top-0 bottom-0 left-0 z-50 w-full max-w-md bg-luxury-black/95 border-r border-gold-primary/15 shadow-[25px_0_50px_rgba(0,0,0,0.8)] flex flex-col justify-between"
+            className="fixed top-0 bottom-0 left-0 z-50 w-full max-w-md bg-luxury-black border-r border-gold-primary/15 shadow-[25px_0_50px_rgba(0,0,0,0.3)] flex flex-col justify-between"
           >
             {/* Header */}
-            <div className="p-6 border-b border-white/5 flex items-center justify-between">
+            <div className="p-6 border-b border-theme-subtle flex items-center justify-between">
               <div>
-                <h3 className="text-base font-light text-primary">طلباتي</h3>
-                <p className="text-[10px] text-gray-500 tracking-wider">سلة المشتريات ومتابعة الطلبات السابقة</p>
+                <h3 className="text-base font-semibold text-primary">طلباتي</h3>
+                <p className="text-xs text-gray-500 tracking-wider font-medium">سلة المشتريات ومتابعة الطلبات السابقة</p>
               </div>
               <button
                 onClick={onClose}
-                className="text-xs px-3 py-1.5 hover:bg-white/5 text-gray-400 hover-text-primary rounded-lg border border-white/5 transition-colors"
+                className="text-sm px-3 py-1.5 hover:bg-overlay-hover text-gray-500 hover:text-primary rounded-lg border border-theme-subtle transition-colors font-medium"
               >
                 إغلاق ×
               </button>
@@ -96,8 +113,8 @@ export default function CartDrawer({
                   animate={{ opacity: 1, scale: 1 }}
                   className="h-full flex flex-col items-center justify-center text-center py-20 space-y-4"
                 >
-                  <p className="text-sm font-light text-gray-400">سلتك خالية تماماً</p>
-                  <p className="text-[11px] text-gray-500 max-w-[200px] leading-relaxed">
+                  <p className="text-sm font-medium text-gray-500">سلتك خالية تماماً</p>
+                  <p className="text-xs text-gray-500 max-w-[200px] leading-relaxed font-medium">
                     تفضل بزيارة قائمة الخدمات واطلب ما يروق لك لتجده هنا فوراً
                   </p>
                 </motion.div>
@@ -106,7 +123,7 @@ export default function CartDrawer({
                   {/* SECTION 1: ACTIVE CART ITEMS */}
                   {cart.length > 0 && (
                     <div className="space-y-3">
-                      <h4 className="text-[10px] uppercase text-gold-primary tracking-widest font-medium border-b border-white/5 pb-2">
+                      <h4 className="text-xs uppercase text-gold-primary tracking-widest font-semibold border-b border-theme-subtle pb-2">
                         السلة الحالية
                       </h4>
                       <div className="space-y-3">
@@ -114,7 +131,7 @@ export default function CartDrawer({
                           <motion.div
                             key={item.product.id}
                             layout
-                            className="glass-panel p-4 rounded-xl border border-white/5 flex items-center justify-between space-x-4 space-x-reverse"
+                            className="glass-panel p-4 rounded-xl border border-theme-subtle flex items-center justify-between space-x-4 space-x-reverse"
                           >
                             {/* Product Image */}
                             {item.product.image ? (
@@ -122,18 +139,18 @@ export default function CartDrawer({
                                 src={item.product.image}
                                 alt={item.product.name}
                                 referrerPolicy="no-referrer"
-                                className="w-14 h-14 rounded-lg object-cover border border-white/5 filter brightness-90 shrink-0"
+                                className="w-14 h-14 rounded-lg object-cover border border-theme-subtle filter brightness-90 shrink-0"
                               />
                             ) : (
-                              <div className="w-14 h-14 rounded-lg bg-gradient-to-br from-gold-primary/10 via-luxury-black/60 to-luxury-black/80 border border-white/5 shrink-0" />
+                              <div className="w-14 h-14 rounded-lg bg-gradient-to-br from-gold-primary/10 via-overlay-card to-overlay-card border border-theme-subtle shrink-0" />
                             )}
 
                             {/* Product details */}
                             <div className="flex-1 min-w-0">
-                              <h4 className="text-xs text-primary truncate font-light mb-1">
+                              <h4 className="text-sm text-primary truncate font-semibold mb-1">
                                 {item.product.name}
                               </h4>
-                              <p className="text-[10px] text-gold-primary/80 font-sans tracking-wide">
+                              <p className="text-xs text-gold-primary/80 font-sans tracking-wide font-semibold">
                                 {formatPrice(item.product.price)} ر.س
                               </p>
 
@@ -141,16 +158,16 @@ export default function CartDrawer({
                               <div className="flex items-center space-x-3 space-x-reverse mt-2">
                                 <button
                                   onClick={() => onUpdateQuantity(item.product.id, -1)}
-                                  className="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-gray-400 hover-text-primary transition-colors text-xs font-sans"
+                                  className="px-2 py-0.5 rounded bg-overlay-card hover:bg-overlay-hover text-gray-500 hover:text-primary transition-colors text-sm font-semibold"
                                 >
                                   -
                                 </button>
-                                <span className="text-xs font-sans text-primary w-4 text-center">
+                                <span className="text-sm font-semibold text-primary w-4 text-center">
                                   {item.quantity}
                                 </span>
                                 <button
                                   onClick={() => onUpdateQuantity(item.product.id, 1)}
-                                  className="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-gray-400 hover-text-primary transition-colors text-xs font-sans"
+                                  className="px-2 py-0.5 rounded bg-overlay-card hover:bg-overlay-hover text-gray-500 hover:text-primary transition-colors text-sm font-semibold"
                                 >
                                   +
                                 </button>
@@ -160,7 +177,7 @@ export default function CartDrawer({
                             {/* Remove item button */}
                             <button
                               onClick={() => onRemoveItem(item.product.id)}
-                              className="text-[10px] text-gray-500 hover:text-red-400 hover:bg-red-500/5 px-2 py-1.5 rounded-lg border border-transparent hover:border-red-500/10 transition-all shrink-0"
+                              className="text-xs text-gray-500 hover:text-red-400 hover:bg-red-500/5 px-2 py-1.5 rounded-lg border border-transparent hover:border-red-500/10 transition-all shrink-0 font-medium"
                             >
                               حذف
                             </button>
@@ -173,7 +190,7 @@ export default function CartDrawer({
                   {/* SECTION 2: SENT ORDERS / REQUESTS HISTORY */}
                   {combinedPreviousItems.length > 0 && (
                     <div className="space-y-3">
-                      <h4 className="text-[10px] uppercase text-gold-primary tracking-widest font-medium border-b border-white/5 pb-2">
+                      <h4 className="text-xs uppercase text-gold-primary tracking-widest font-semibold border-b border-theme-subtle pb-2">
                         الطلبات السابقة والجافة
                       </h4>
                       <div className="space-y-4">
@@ -183,20 +200,20 @@ export default function CartDrawer({
                             return (
                               <div
                                 key={order.id}
-                                className="glass-panel p-4 rounded-xl border border-white/5 space-y-3 relative overflow-hidden text-xs"
+                                className="glass-panel p-4 rounded-xl border border-theme-subtle space-y-3 relative overflow-hidden text-xs"
                               >
                                 <div className="flex justify-between items-start">
                                   <div className="space-y-0.5">
-                                    <span className="text-[10px] font-sans text-gold-primary font-medium">
+                                    <span className="text-xs font-sans text-gold-primary font-semibold">
                                       {order.id}
                                     </span>
-                                    <span className="text-[9px] text-gray-500 block">
+                                    <span className="text-[11px] text-gray-500 block font-medium">
                                       {order.createdAt}
                                     </span>
                                   </div>
 
                                   <span
-                                    className={`text-[9px] px-2 py-0.5 rounded font-medium border ${
+                                    className={`text-[11px] px-2 py-0.5 rounded font-semibold border ${
                                       order.status === "قيد الانتظار"
                                         ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
                                         : order.status === "جاري التحضير"
@@ -212,18 +229,18 @@ export default function CartDrawer({
                                   </span>
                                 </div>
 
-                                <div className="space-y-1 border-t border-white/5 pt-2 text-[11px] text-gray-400">
+                                <div className="space-y-1 border-t border-theme-subtle pt-2 text-xs text-gray-500">
                                   {order.items.map((it, idx) => (
                                     <div key={idx} className="flex justify-between">
-                                      <span className="font-light">
-                                        {it.name} <span className="font-sans text-[10px] text-gray-500">x{it.quantity}</span>
+                                      <span className="font-medium">
+                                        {it.name} <span className="font-sans text-[11px] text-gray-500">x{it.quantity}</span>
                                       </span>
-                                      <span className="font-sans">{formatPrice(it.price * it.quantity)} ر.س</span>
+                                      <span className="font-sans font-semibold">{formatPrice(it.price * it.quantity)} ر.س</span>
                                     </div>
                                   ))}
                                 </div>
 
-                                <div className="flex justify-between items-center border-t border-white/5 pt-2">
+                                <div className="flex justify-between items-center border-t border-theme-subtle pt-2">
                                   <div>
                                     <span className="text-[10px] text-gold-primary font-semibold font-sans">{formatPrice(order.total)} ر.س</span>
                                   </div>
@@ -250,7 +267,7 @@ export default function CartDrawer({
                                   {order.status === "ملغي" && onDeleteOrder && (
                                     <button
                                       onClick={() => onDeleteOrder(order.id)}
-                                      className="text-[9px] text-gray-400 hover:text-red-400 font-light px-2.5 py-1 rounded bg-white/5 border border-white/10 hover:border-red-500/20 transition-all"
+                                      className="text-[9px] text-gray-400 hover:text-red-400 font-light px-2.5 py-1 rounded bg-overlay-card border border-theme-subtle hover:border-red-500/20 transition-all"
                                     >
                                       حذف الطلب ×
                                     </button>
@@ -280,7 +297,7 @@ export default function CartDrawer({
                                   </span>
                                 </div>
 
-                                <div className="space-y-1 border-t border-white/5 pt-2">
+                                <div className="space-y-1 border-t border-theme-subtle pt-2">
                                   <span className="font-medium text-primary block text-[11px]">{req.category}</span>
                                   <p className="text-[10px] text-gray-400 leading-relaxed font-light">{req.notes || "لا توجد ملاحظات إضافية"}</p>
                                 </div>
@@ -297,7 +314,7 @@ export default function CartDrawer({
 
             {/* Footer Summary / Checkout */}
             {cart.length > 0 && (
-              <div className="p-6 border-t border-white/5 bg-luxury-black space-y-4">
+              <div className="p-6 border-t border-theme-subtle bg-luxury-black space-y-4">
                 <div className="space-y-2">
                   <div className="flex justify-between text-xs text-gray-400">
                     <span>قيمة المشتريات</span>
@@ -307,7 +324,7 @@ export default function CartDrawer({
                     <span>رسوم خدمة الغرف الراقية</span>
                     <span className="text-gold-primary text-[10px]">مشمولة مجاناً</span>
                   </div>
-                  <div className="relative my-2 h-[1px] bg-white/5" />
+                  <div className="relative my-2 h-[1px] bg-border-subtle" />
                   <div className="flex justify-between text-sm">
                     <span className="text-primary font-light">الإجمالي النهائي</span>
                     <span className="text-gold-primary font-sans text-base font-semibold">{totalAmount} ر.س</span>

@@ -4,7 +4,7 @@ const API_BASE_URL = "https://lytc-hotel-backend.onrender.com";
 
 // Static database elements mimicking backend data
 const products: Product[] = [
-  // Restaurant (المطعم)
+  // Restaurant
   {
     id: "r1",
     category: "restaurant",
@@ -38,7 +38,7 @@ const products: Product[] = [
     image: "https://images.pexels.com/photos/262959/pexels-photo-262959.jpeg?auto=compress&cs=tinysrgb&w=1200"
   },
 
-  // Drinks (المشروبات)
+  // Drinks
   {
     id: "d1",
     category: "drinks",
@@ -72,7 +72,7 @@ const products: Product[] = [
     image: "https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg?auto=compress&cs=tinysrgb&w=1200"
   },
 
-  // Room Service (خدمة الغرف)
+  // Room Service
   {
     id: "s1",
     category: "room_service",
@@ -115,24 +115,6 @@ const specialRequestCategories: SpecialRequestCategory[] = [
   { id: "airport", name: "تنسيق الاستقبال والتوصيل للمطار", description: "حجز سيارة ليموزين خاصة للتنقل الفاخر وتسهيل السفر" }
 ];
 
-const offers = [
-  {
-    id: "o1",
-    name: "تجربة اليخت الخاص عند الغروب",
-    description: "رحلة بحرية مخصصة مدتها ثلاث ساعات على متن يخت فيلا مسك الفاخر مع طاهٍ خاص لتقديم عشاء بحري متكامل."
-  },
-  {
-    id: "o2",
-    name: "جلسة الاسترخاء وتجديد الحيوية بالذهب",
-    description: "علاج متكامل مخصص لشخصين في السبا الفاخر باستخدام زيوت عطرية نادرة ومستخلصات الذهب عيار ٢٤ قيراط."
-  },
-  {
-    id: "o3",
-    name: "رحلة الهليكوبتر وجولة سماء المدينة",
-    description: "جولة سماوية ساحرة فوق المعالم التاريخية والساحل تنطلق مباشرة من مهبط طائرات الهليكوبتر الخاص بالمنتجع."
-  }
-];
-
 // Helper to validate room numbers
 function isValidRoom(room: string): boolean {
   const cleanRoom = room.trim().replace(/[٠-٩]/g, (d) => String.fromCharCode(d.charCodeAt(0) - 1632));
@@ -141,16 +123,7 @@ function isValidRoom(room: string): boolean {
   return !isNaN(num) && num >= 100 && num <= 999;
 }
 
-// Local storage helper databases
-function getLocalOrders(): Order[] {
-  const data = localStorage.getItem("vms_orders_db");
-  return data ? JSON.parse(data) : [];
-}
-
-function saveLocalOrders(orders: Order[]) {
-  localStorage.setItem("vms_orders_db", JSON.stringify(orders));
-}
-
+// Local storage helper for special requests
 function getLocalRequests(): SpecialRequest[] {
   const data = localStorage.getItem("vms_special_requests_db");
   return data ? JSON.parse(data) : [];
@@ -168,7 +141,6 @@ export const apiService = {
       throw new Error("رقم الغرفة غير صحيح. يرجى إدخال رقم غرفة صالح بين 100 و 999.");
     }
 
-    // Get real current date in Arabic format
     const now = new Date();
     const checkInDate = now.toLocaleDateString("ar-SA", {
       year: "numeric",
@@ -176,7 +148,6 @@ export const apiService = {
       day: "2-digit"
     });
 
-    // Calculate check-out date (7 days from now)
     const checkOutDate = new Date(now);
     checkOutDate.setDate(checkOutDate.getDate() + 7);
     const checkOutDateStr = checkOutDate.toLocaleDateString("ar-SA", {
@@ -199,41 +170,7 @@ export const apiService = {
     };
   },
 
-  // Get Stay Information
-  async getStayInfo(roomNumber: string): Promise<StayInfo> {
-    await new Promise((resolve) => setTimeout(resolve, 200));
-    if (!roomNumber || !isValidRoom(roomNumber)) {
-      throw new Error("الرجاء تسجيل الدخول أولاً");
-    }
-
-    // Get real current date in Arabic format
-    const now = new Date();
-    const checkInDate = now.toLocaleDateString("ar-SA", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit"
-    });
-
-    // Calculate check-out date (7 days from now)
-    const checkOutDate = new Date(now);
-    checkOutDate.setDate(checkOutDate.getDate() + 7);
-    const checkOutDateStr = checkOutDate.toLocaleDateString("ar-SA", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit"
-    });
-
-    return {
-      villaName: `جناح فيلا مسك ${roomNumber}`,
-      checkIn: checkInDate,
-      checkOut: checkOutDateStr,
-      butlerName: "ميخائيل",
-      conciergeNumber: "+٩٦٦ ٥٠ ٠٠٠ ٠٠٠٠",
-      capacity: "شخصين بالغين",
-    };
-  },
-
-  // Get Stay Details (including payment information)
+  // Get Stay Details
   async getStayDetails(roomNumber: string): Promise<{
     roomCharge: number;
     totalCharge: number;
@@ -246,22 +183,14 @@ export const apiService = {
     const url = new URL(`${API_BASE_URL}/api/guest/stay-details`);
     url.searchParams.append("roomNumber", roomNumber);
 
-    console.log("Fetching stay details for room:", roomNumber);
-    console.log("URL:", url.toString());
-
     try {
       const response = await fetch(url.toString(), {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
       });
-
-      console.log("Response status:", response.status);
 
       if (!response.ok) {
         console.error("Failed to fetch stay details, status:", response.status);
-        // Return fallback data instead of throwing error (handles 401 auth errors)
         return {
           roomCharge: 0,
           totalCharge: 0,
@@ -274,7 +203,6 @@ export const apiService = {
       }
 
       const data = await response.json();
-      console.log("Stay details data:", data);
 
       return {
         roomCharge: data.roomCharge || 0,
@@ -287,7 +215,6 @@ export const apiService = {
       };
     } catch (error) {
       console.error("Error fetching stay details:", error);
-      // Return fallback data on network error
       return {
         roomCharge: 0,
         totalCharge: 0,
@@ -300,14 +227,13 @@ export const apiService = {
     }
   },
 
-
   // Get Special Request Categories
   async getSpecialRequestCategories(): Promise<SpecialRequestCategory[]> {
     await new Promise((resolve) => setTimeout(resolve, 200));
     return [];
   },
 
-  // Submit Special Request
+  // Submit Special Request (local storage)
   async submitSpecialRequest(
     roomNumber: string,
     categoryId: string,
@@ -337,35 +263,39 @@ export const apiService = {
     return { success: true, request: newRequest };
   },
 
-  // Get Room's Special Requests
+  // Get Room's Special Requests (local storage)
   async getSpecialRequests(roomNumber: string): Promise<SpecialRequest[]> {
     await new Promise((resolve) => setTimeout(resolve, 200));
     const requests = getLocalRequests();
     return requests.filter((r) => r.roomNumber === roomNumber);
   },
 
-  // Get Special Offers
+  // Get Special Offers from API: GET /api/guest/special-offers?pageable=...
   async getOffers(): Promise<{ id: number; title: string; description: string }[]> {
     const url = new URL(`${API_BASE_URL}/api/guest/special-offers`);
     url.searchParams.append("page", "0");
     url.searchParams.append("size", "10");
 
-    const response = await fetch(url.toString(), {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    try {
+      const response = await fetch(url.toString(), {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch special offers");
+      if (!response.ok) {
+        console.error("Failed to fetch special offers, status:", response.status);
+        return [];
+      }
+
+      const data = await response.json();
+      return data.content || [];
+    } catch (error) {
+      console.error("Error fetching special offers:", error);
+      return [];
     }
-
-    const data = await response.json();
-    return data.content || [];
   },
 
-  // Get Menu Items
+  // Get Menu Items from API: GET /api/guest/menu?category=xxx&pageable=...
   async getMenu(category?: string): Promise<{ id: number; name: string; price: number; category: string }[]> {
     const url = new URL(`${API_BASE_URL}/api/guest/menu`);
     url.searchParams.append("page", "0");
@@ -374,22 +304,26 @@ export const apiService = {
       url.searchParams.append("category", category);
     }
 
-    const response = await fetch(url.toString(), {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    try {
+      const response = await fetch(url.toString(), {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch menu items");
+      if (!response.ok) {
+        console.error("Failed to fetch menu items, status:", response.status);
+        return [];
+      }
+
+      const data = await response.json();
+      return data.content || [];
+    } catch (error) {
+      console.error("Error fetching menu items:", error);
+      return [];
     }
-
-    const data = await response.json();
-    return data.content || [];
   },
 
-  // Get Special Orders
+  // Get Special Orders from API: GET /api/guest/stays/special-orders?roomNumber=xxx
   async getSpecialOrders(roomNumber: string): Promise<{
     id: number;
     specialOffer: { id: number; title: string; description: string };
@@ -399,29 +333,68 @@ export const apiService = {
     const url = new URL(`${API_BASE_URL}/api/guest/stays/special-orders`);
     url.searchParams.append("roomNumber", roomNumber);
 
-    const response = await fetch(url.toString(), {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    try {
+      const response = await fetch(url.toString(), {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch special orders");
+      if (!response.ok) {
+        console.error("Failed to fetch special orders, status:", response.status);
+        return [];
+      }
+
+      const data = await response.json();
+      return data || [];
+    } catch (error) {
+      console.error("Error fetching special orders:", error);
+      return [];
     }
-
-    const data = await response.json();
-    return data || [];
   },
 
-  // Get Room's Orders
+  // Get Orders from API: GET /api/guest/orders?roomNumber=xxx&pageable=...
+  // API returns PageOrderResponse with OrderResponse objects
   async getOrders(roomNumber: string): Promise<Order[]> {
-    await new Promise((resolve) => setTimeout(resolve, 200));
-    const orders = getLocalOrders();
-    return orders.filter((o) => o.roomNumber === roomNumber);
+    const url = new URL(`${API_BASE_URL}/api/guest/orders`);
+    url.searchParams.append("roomNumber", roomNumber);
+    url.searchParams.append("page", "0");
+    url.searchParams.append("size", "100");
+
+    try {
+      const response = await fetch(url.toString(), {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!response.ok) {
+        console.error("Failed to fetch orders, status:", response.status);
+        return [];
+      }
+
+      const data = await response.json();
+      const orders = data.content || [];
+
+      // Map API OrderResponse to local Order type
+      return orders.map((apiOrder: any) => ({
+        id: String(apiOrder.orderId),
+        roomNumber: apiOrder.roomNumber || roomNumber,
+        items: (apiOrder.items || []).map((item: any) => ({
+          productId: String(item.menuItemId),
+          name: item.itemName || "",
+          quantity: item.quantity || 0,
+          price: parseFloat(item.unitPrice) || 0,
+        })),
+        total: parseFloat(apiOrder.totalAmount) || 0,
+        status: apiOrder.status || "قيد الانتظار",
+        createdAt: apiOrder.createdAt || "",
+      }));
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      return [];
+    }
   },
 
-  // Create Order
+  // Create Order: POST /api/guest/orders?roomNumber=xxx
   async createOrder(
     roomNumber: string,
     category: "FOOD" | "DRINK" | "SERVICE",
@@ -430,123 +403,98 @@ export const apiService = {
     const url = new URL(`${API_BASE_URL}/api/guest/orders`);
     url.searchParams.append("roomNumber", roomNumber);
 
-    console.log("Creating order for room:", roomNumber);
-    console.log("Order data:", { category, items });
+    try {
+      const response = await fetch(url.toString(), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ category, items }),
+      });
+
+      if (!response.ok) {
+        console.error("Failed to create order, status:", response.status);
+        return { success: false, orderId: 0 };
+      }
+
+      const data = await response.json();
+      return { success: true, orderId: data.orderId || data.id };
+    } catch (error) {
+      console.error("Error creating order:", error);
+      return { success: false, orderId: 0 };
+    }
+  },
+
+  // Cancel Order: POST /api/guest/orders/{orderId}/cancel?roomNumber=xxx
+  async cancelOrder(orderId: string, roomNumber?: string): Promise<{ success: boolean }> {
+    const url = new URL(`${API_BASE_URL}/api/guest/orders/${orderId}/cancel`);
+    if (roomNumber) {
+      url.searchParams.append("roomNumber", roomNumber);
+    }
 
     try {
       const response = await fetch(url.toString(), {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          category,
-          items,
-        }),
+        headers: { "Content-Type": "application/json" },
       });
 
-      console.log("Create order response status:", response.status);
-
       if (!response.ok) {
-        console.error("Failed to create order, status:", response.status);
-        // Return mock order ID to allow UI to proceed
-        const mockOrderId = Math.floor(Math.random() * 9000) + 1000;
-        return { success: true, orderId: mockOrderId };
+        console.error("Failed to cancel order, status:", response.status);
+        throw new Error("فشل إلغاء الطلب");
       }
 
-      const data = await response.json();
-      console.log("Order created successfully:", data);
-      return { success: true, orderId: data.id };
+      return { success: true };
     } catch (error) {
-      console.error("Error creating order:", error);
-      // Return mock order ID to allow UI to proceed
-      const mockOrderId = Math.floor(Math.random() * 9000) + 1000;
-      return { success: true, orderId: mockOrderId };
+      console.error("Error cancelling order:", error);
+      throw error;
     }
   },
 
-  // Cancel Order
-  async cancelOrder(orderId: string): Promise<{ success: boolean; order: Order }> {
-    await new Promise((resolve) => setTimeout(resolve, 400));
-    const orders = getLocalOrders();
-    const index = orders.findIndex((o) => o.id === orderId);
-    if (index === -1) {
-      throw new Error("الطلب غير موجود");
-    }
-    if (orders[index].status !== "قيد الانتظار") {
-      throw new Error("لا يمكن إلغاء الطلب بعد البدء في تحضيره");
-    }
-    orders[index].status = "ملغي";
-    saveLocalOrders(orders);
-    return { success: true, order: orders[index] };
-  },
-
-  // Delete/Dismiss Order
-  async deleteOrder(orderId: string): Promise<{ success: boolean }> {
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    const orders = getLocalOrders();
-    const index = orders.findIndex((o) => o.id === orderId);
-    if (index === -1) {
-      throw new Error("الطلب غير موجود");
-    }
-    orders.splice(index, 1);
-    saveLocalOrders(orders);
-    return { success: true };
-  },
-
-  // Submit Stay Rating
+  // Submit Stay Rating: PUT /api/guest/stay/rating?roomNumber=xxx
   async submitRating(roomNumber: string, stars: number, notes: string): Promise<{ success: boolean }> {
     const url = new URL(`${API_BASE_URL}/api/guest/stay/rating`);
     url.searchParams.append("roomNumber", roomNumber);
 
-    const response = await fetch(url.toString(), {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        stars,
-        notes: notes || "",
-      }),
-    });
+    try {
+      const response = await fetch(url.toString(), {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          stars,
+          notes: notes || "",
+        }),
+      });
 
-    if (!response.ok) {
-      throw new Error("Failed to submit rating");
+      if (!response.ok) {
+        console.error("Failed to submit rating, status:", response.status);
+        throw new Error("فشل إرسال التقييم");
+      }
+
+      return { success: true };
+    } catch (error) {
+      console.error("Error submitting rating:", error);
+      throw error;
     }
-
-    return { success: true };
   },
 
-  // Checkout (Check out from room)
+  // Checkout: PUT /api/guest/stays/checkout?roomNumber=xxx
   async checkout(roomNumber: string): Promise<{ success: boolean; checkOutTime: string }> {
     const url = new URL(`${API_BASE_URL}/api/guest/stays/checkout`);
     url.searchParams.append("roomNumber", roomNumber);
 
-    console.log("Attempting checkout for room:", roomNumber);
-    console.log("URL:", url.toString());
-
     try {
       const response = await fetch(url.toString(), {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
       });
-
-      console.log("Checkout response status:", response.status);
 
       if (!response.ok) {
         console.error("Failed to checkout, status:", response.status);
-        // Return success anyway to allow UI to proceed
         return { success: true, checkOutTime: new Date().toISOString() };
       }
 
       const data = await response.json();
-      console.log("Checkout data:", data);
       return { success: true, checkOutTime: data.checkOutTime || new Date().toISOString() };
     } catch (error) {
       console.error("Error during checkout:", error);
-      // Return success anyway to allow UI to proceed
       return { success: true, checkOutTime: new Date().toISOString() };
     }
   },

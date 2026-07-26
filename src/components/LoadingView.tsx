@@ -27,14 +27,14 @@ export default function LoadingView({ onComplete }: LoadingViewProps) {
           initial={{ opacity: 0.3, letterSpacing: "0.2em" }}
           animate={{ opacity: [0.3, 0.9, 0.3], letterSpacing: "0.25em" }}
           transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-          className="text-[10px] uppercase font-light text-gold-primary tracking-[0.2em] mb-4"
+          className="text-[11px] uppercase font-semibold text-gold-primary tracking-[0.2em] mb-4"
         >
           جاري تهيئة الخدمات الفندقية
           <span className="font-sans mr-2">VILLA MISK</span>
         </motion.p>
 
         {/* Golden line expand loader */}
-        <div className="h-[1.5px] w-64 bg-white/10 rounded-full overflow-hidden relative">
+        <div className="h-[1.5px] w-64 bg-border-subtle rounded-full overflow-hidden relative">
           <motion.div
             initial={{ left: "-100%", width: "20%" }}
             animate={{ left: "100%", width: "40%" }}

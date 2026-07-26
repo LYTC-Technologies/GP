@@ -33,7 +33,7 @@ export default function SplashView({ onComplete }: SplashViewProps) {
         </motion.div>
 
         {/* Elegant growing horizontal gold line */}
-        <div className="relative mt-8 h-[1px] w-48 overflow-hidden bg-white/10">
+        <div className="relative mt-8 h-[1px] w-48 overflow-hidden bg-border-subtle">
           <motion.div
             initial={{ left: "-100%", width: "0%" }}
             animate={{ left: "0%", width: "100%" }}

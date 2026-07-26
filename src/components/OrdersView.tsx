@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { motion } from "motion/react";
 import { CartItem } from "../types";
 import CreateOrderModal from "./CreateOrderModal";
-import ThemeToggle from "./ThemeToggle";
 
 interface OrdersViewProps {
   cart: CartItem[];
@@ -55,29 +54,29 @@ export default function OrdersView({
     <>
       <div className="min-h-screen bg-luxury-bg flex flex-col justify-between overflow-x-hidden relative">
         {/* Top Header Bar */}
-        <header className="relative z-20 px-6 py-6 border-b border-white/5 bg-luxury-black/40 backdrop-blur-md flex items-center justify-between">
+        <header className="relative z-20 px-6 py-6 border-b border-theme-subtle bg-overlay-header backdrop-blur-md flex items-center justify-between">
         {/* Back Button */}
         <button
           onClick={onBack}
-          className="text-xs text-gray-400 hover-text-primary transition-colors"
+          className="text-sm text-gray-500 hover:text-primary transition-colors font-medium"
         >
           الرئيسية ←
         </button>
 
         {/* Title */}
         <div className="text-center">
-          <h2 className="text-base font-light text-primary">قائمة الطلبات</h2>
-          <p className="text-[9px] text-gold-primary tracking-widest font-sans">SELECT CATEGORY</p>
+          <h2 className="text-base font-semibold text-primary">قائمة الطلبات</h2>
+          <p className="text-[10px] text-gold-primary tracking-widest font-semibold">SELECT CATEGORY</p>
         </div>
 
         {/* Cart */}
         <button
           onClick={onOpenCart}
-          className="text-xs text-gold-primary px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-300 font-medium"
+          className="text-sm text-gold-primary px-3 py-1.5 rounded-lg bg-overlay-card hover:bg-overlay-hover transition-all duration-300 font-semibold"
         >
           سلة الطلبات
           {totalCartItems > 0 && (
-            <span className="mr-1.5 font-sans bg-gold-primary text-black px-1.5 py-0.5 rounded text-[10px] font-bold">
+            <span className="mr-1.5 font-sans bg-gold-primary text-black px-1.5 py-0.5 rounded text-[11px] font-bold">
               {totalCartItems}
             </span>
           )}
@@ -86,16 +85,11 @@ export default function OrdersView({
         {/* Create Order Button */}
         <button
           onClick={() => setIsCreateOrderModalOpen(true)}
-          className="text-xs text-primary px-3 py-1.5 rounded-lg bg-gold-primary/20 hover:bg-gold-primary/30 transition-all duration-300 font-medium border border-gold-primary/30"
+          className="text-sm text-primary px-3 py-1.5 rounded-lg bg-gold-primary/20 hover:bg-gold-primary/30 transition-all duration-300 font-semibold border border-gold-primary/30"
         >
           + طلب جديد
         </button>
       </header>
-
-      {/* Theme Toggle below header top left */}
-      <div className="absolute top-20 left-6 z-10">
-        <ThemeToggle />
-      </div>
 
       {/* Categories Content */}
       <main className="flex-1 w-full max-w-5xl mx-auto px-6 py-10 flex flex-col justify-center space-y-6 md:space-y-8">
@@ -107,7 +101,7 @@ export default function OrdersView({
             transition={{ delay: idx * 0.1, duration: 0.9, cubicBezier: [0.16, 1, 0.3, 1] }}
             whileHover={{ scale: 1.01 }}
             onClick={() => onSelectCategory(cat.id)}
-            className="relative h-48 md:h-60 rounded-2xl overflow-hidden group cursor-pointer border border-white/5 hover:border-gold-primary/20 transition-all duration-500 shadow-xl"
+            className="relative h-48 md:h-60 rounded-2xl overflow-hidden group cursor-pointer border border-theme-subtle hover:border-gold-primary/20 transition-all duration-500 shadow-xl"
           >
             {/* Lazy Image Background */}
             <img
@@ -124,20 +118,20 @@ export default function OrdersView({
             <div className="absolute inset-0 p-6 flex flex-col justify-between">
               {/* Top Subtitle */}
               <div className="flex items-center space-x-2 space-x-reverse">
-                <div className="px-2.5 py-1 bg-luxury-black/60 rounded-md border border-gold-primary/10 text-[9px] text-gold-primary">
+                <div className="px-2.5 py-1 bg-overlay-card rounded-md border border-gold-primary/10 text-[10px] text-gold-primary font-semibold">
                   {cat.tag}
                 </div>
-                <span className="text-[10px] font-sans tracking-[0.3em] text-gray-400 font-light">
+                <span className="text-[10px] font-sans tracking-[0.3em] text-gray-500 font-medium">
                   {cat.subtitle}
                 </span>
               </div>
 
               {/* Bottom Titles */}
               <div className="space-y-2 max-w-md">
-                <h3 className="text-lg md:text-xl font-light text-primary group-hover:text-gold-primary transition-colors duration-300">
+                <h3 className="text-lg md:text-xl font-semibold text-primary group-hover:text-gold-primary transition-colors duration-300">
                   {cat.title}
                 </h3>
-                <p className="text-xs text-gray-400 leading-relaxed font-light line-clamp-2">
+                <p className="text-sm text-gray-500 leading-relaxed font-medium line-clamp-2">
                   {cat.description}
                 </p>
               </div>

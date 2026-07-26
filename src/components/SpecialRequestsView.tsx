@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { SpecialRequestCategory, SpecialRequest } from "../types";
-import ThemeToggle from "./ThemeToggle";
 
 interface SpecialOffer {
   id: number;
@@ -79,10 +78,10 @@ export default function SpecialRequestsView({
               </div>
 
               <div className="space-y-2">
-                <h3 className="text-xl font-light text-primary tracking-wide">
+                <h3 className="text-xl font-semibold text-primary tracking-wide">
                   تم إرسال طلبك بنجاح
                 </h3>
-                <p className="text-xs text-gray-400 font-light leading-relaxed">
+                <p className="text-sm text-gray-500 font-medium leading-relaxed">
                   تم إشعار مدير الخدمة والجناح الخاص بك. جاري تلبية رغبتك الآن بأعلى معايير الرعاية.
                 </p>
               </div>
@@ -97,25 +96,25 @@ export default function SpecialRequestsView({
       </AnimatePresence>
 
       {/* Top Header */}
-      <header className="relative z-20 px-6 py-6 border-b border-white/5 bg-luxury-black/40 backdrop-blur-md flex items-center justify-between">
+      <header className="relative z-20 px-6 py-6 border-b border-theme-subtle bg-overlay-header backdrop-blur-md flex items-center justify-between">
         {/* Back Button */}
         <button
           onClick={selectedCategory ? () => setSelectedCategory(null) : onBack}
-          className="text-xs text-gray-400 hover-text-primary transition-colors animate-fade-in"
+          className="text-sm text-gray-500 hover:text-primary transition-colors animate-fade-in font-medium"
         >
           {selectedCategory ? "التصنيفات ←" : "الرئيسية ←"}
         </button>
 
         {/* Header Title */}
         <div className="text-center">
-          <h2 className="text-base font-light text-primary">
+          <h2 className="text-base font-semibold text-primary">
             {selectedCategory ? "تفاصيل الطلب الخاص" : "الطلبات الخاصة والخدمات"}
           </h2>
-          <p className="text-[9px] text-gold-primary tracking-widest font-sans">SPECIAL SERVICE</p>
+          <p className="text-[10px] text-gold-primary tracking-widest font-semibold">SPECIAL SERVICE</p>
         </div>
 
-        {/* Theme Toggle */}
-        <ThemeToggle />
+        {/* Spacer for layout balance */}
+        <div className="w-16" />
       </header>
 
       {/* Main content body */}
@@ -124,8 +123,8 @@ export default function SpecialRequestsView({
           /* View A: Select special request category */
           <div className="space-y-8">
             <div className="text-center max-w-md mx-auto space-y-2">
-              <h3 className="text-lg font-light text-primary">كيف يمكننا خدمتك اليوم؟</h3>
-              <p className="text-xs text-gray-400 font-light">
+              <h3 className="text-xl font-semibold text-primary">كيف يمكننا خدمتك اليوم؟</h3>
+              <p className="text-sm text-gray-500 font-medium">
                 اختر نوع الخدمة التي ترغب بها، وسيتم تلبية طلبك بواسطة المساعد الشخصي ميخائيل
               </p>
             </div>
@@ -148,8 +147,8 @@ export default function SpecialRequestsView({
                     className="glass-panel p-4 rounded-[24px] border border-gold-primary/10 hover:border-gold-primary/25 transition-all duration-500 shadow-lg flex flex-col justify-between group overflow-hidden"
                   >
                     {/* Image container with gradient */}
-                    <div className="relative w-full h-48 rounded-2xl overflow-hidden mb-4 bg-black/40">
-                      <div className="w-full h-full bg-gradient-to-br from-gold-primary/10 via-luxury-black/60 to-luxury-black/80" />
+                    <div className="relative w-full h-48 rounded-2xl overflow-hidden mb-4 bg-overlay-card">
+                      <div className="w-full h-full bg-gradient-to-br from-gold-primary/10 via-overlay-card to-overlay-card" />
 
                       {/* Golden subtle aura decoration */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-60" />
@@ -158,17 +157,17 @@ export default function SpecialRequestsView({
                     {/* Title and descriptions */}
                     <div className="flex-1 flex flex-col justify-between space-y-3">
                       <div>
-                        <h3 className="text-sm text-primary font-light leading-tight mb-2">
+                        <h3 className="text-sm text-primary font-semibold leading-tight mb-2">
                           {offer.title}
                         </h3>
-                        <p className="text-[10px] text-gray-500 font-light leading-relaxed line-clamp-3">
+                        <p className="text-xs text-gray-500 font-medium leading-relaxed line-clamp-3">
                           {offer.description}
                         </p>
                       </div>
 
                       {/* Pricing */}
                       <div className="flex items-center justify-between pt-2">
-                        <span className="text-xs text-gold-primary font-sans font-medium tracking-wide">
+                        <span className="text-sm text-gold-primary font-sans font-semibold tracking-wide">
                           {formatPrice(offer.price)} ر.س
                         </span>
                         {onAddToCart && (
@@ -182,7 +181,7 @@ export default function SpecialRequestsView({
                               description: offer.description,
                               image: ""
                             })}
-                            className="btn-gold-outline rounded-xl px-3.5 py-1.5 text-[10px] tracking-wide font-medium"
+                            className="btn-gold-outline rounded-xl px-3.5 py-2 text-xs tracking-wide font-semibold"
                           >
                             + أضف للسلة
                           </motion.button>
@@ -197,19 +196,19 @@ export default function SpecialRequestsView({
             {/* List of active requests */}
             {existingRequests.length > 0 && (
               <div className="mt-12 space-y-4">
-                <div className="flex items-center text-gray-400 border-b border-white/5 pb-2">
-                  <span className="text-[11px] uppercase tracking-wider font-light">سجل طلبات الخدمة الجارية</span>
+                <div className="flex items-center text-gray-400 border-b border-theme-subtle pb-2">
+                  <span className="text-xs uppercase tracking-wider font-semibold">سجل طلبات الخدمة الجارية</span>
                 </div>
                 <div className="space-y-3">
                   {existingRequests.map((req) => (
-                    <div key={req.id} className="p-4 bg-white/[0.01] rounded-xl border border-white/5 flex justify-between items-center text-xs">
+                    <div key={req.id} className="p-4 bg-overlay-card rounded-xl border border-theme-subtle flex justify-between items-center text-xs">
                       <div className="space-y-1">
-                        <span className="font-medium text-primary block">{req.category}</span>
-                        <span className="text-[10px] text-gray-500 block leading-relaxed max-w-sm">{req.notes}</span>
+                        <span className="font-semibold text-primary block">{req.category}</span>
+                        <span className="text-xs text-gray-500 block leading-relaxed max-w-sm font-medium">{req.notes}</span>
                       </div>
                       <div className="text-right space-y-1 shrink-0">
-                        <span className="text-[10px] bg-gold-primary/10 text-gold-primary px-2 py-0.5 rounded-full block border border-gold-primary/15">قيد المتابعة</span>
-                        <span className="text-[9px] text-gray-600 block">{req.createdAt}</span>
+                        <span className="text-xs bg-gold-primary/10 text-gold-primary px-2 py-0.5 rounded-full block border border-gold-primary/15 font-semibold">قيد المتابعة</span>
+                        <span className="text-[11px] text-gray-500 block font-medium">{req.createdAt}</span>
                       </div>
                     </div>
                   ))}
@@ -225,16 +224,16 @@ export default function SpecialRequestsView({
             className="glass-panel p-6 md:p-8 rounded-[24px] border border-gold-primary/15 shadow-2xl space-y-6"
           >
             {/* Header info */}
-            <div className="border-b border-white/5 pb-4">
-              <span className="text-[9px] text-gold-primary uppercase tracking-[0.2em] font-sans">SERVICE DETAILS</span>
-              <h3 className="text-base text-primary font-medium mt-1">{selectedCategory.name}</h3>
-              <p className="text-[11px] text-gray-500 mt-1 font-light leading-relaxed">{selectedCategory.description}</p>
+            <div className="border-b border-theme-subtle pb-4">
+              <span className="text-[10px] text-gold-primary uppercase tracking-[0.2em] font-semibold">SERVICE DETAILS</span>
+              <h3 className="text-base text-primary font-semibold mt-1">{selectedCategory.name}</h3>
+              <p className="text-sm text-gray-500 mt-1 font-medium leading-relaxed">{selectedCategory.description}</p>
             </div>
 
             {/* Input form */}
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label htmlFor="request-notes" className="block text-[10px] text-gold-primary uppercase tracking-wider mb-2">
+                <label htmlFor="request-notes" className="block text-xs text-gold-primary uppercase tracking-wider mb-2 font-semibold">
                   تفاصيل الطلب أو ملاحظات خاصة
                 </label>
                 <textarea
@@ -243,7 +242,7 @@ export default function SpecialRequestsView({
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="يرجى كتابة أية متطلبات خاصة أو توجيهات محددة للمساعد الشخصي هنا..."
-                  className="w-full bg-luxury-black/60 rounded-xl p-4 border border-gold-primary/20 text-xs text-primary placeholder-gray-600 focus:outline-none transition-all duration-300"
+                  className="w-full bg-input-theme rounded-xl p-4 border border-gold-primary/20 text-sm text-primary placeholder-gray-500 focus:outline-none transition-all duration-300 font-medium leading-relaxed"
                 />
               </div>
 
@@ -252,7 +251,7 @@ export default function SpecialRequestsView({
                 <button
                   type="button"
                   onClick={() => setSelectedCategory(null)}
-                  className="flex-1 btn-gold-outline py-3 text-xs font-medium rounded-xl text-center"
+                  className="flex-1 btn-gold-outline py-3 text-sm font-semibold rounded-xl text-center"
                 >
                   إلغاء والتراجع
                 </button>
@@ -260,7 +259,7 @@ export default function SpecialRequestsView({
                   whileTap={{ scale: 0.98 }}
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex-[2] btn-gold py-3 text-xs font-medium rounded-xl flex items-center justify-center space-x-2 space-x-reverse disabled:opacity-50"
+                  className="flex-[2] btn-gold py-3 text-sm font-semibold rounded-xl flex items-center justify-center space-x-2 space-x-reverse disabled:opacity-50"
                 >
                   <span>{isSubmitting ? "جاري إرسال الطلب..." : "إرسال الطلب للمساعد"}</span>
                 </motion.button>

@@ -9,7 +9,7 @@
   --color-gold-accent: #D6B574;
 }
 
-/* Dark Theme (Default) */
+/* Dark Theme */
 [data-theme="dark"] {
   --color-luxury-bg: #080808;
   --color-luxury-black: #000000;
@@ -20,6 +20,16 @@
   --color-text-muted: #6b7280;
   --color-scrollbar-track: #000000;
   --color-scrollbar-thumb: #dfba73;
+  --color-overlay-header: rgba(0, 0, 0, 0.25);
+  --color-overlay-card: rgba(255, 255, 255, 0.04);
+  --color-overlay-hover: rgba(255, 255, 255, 0.08);
+  --color-overlay-skeleton: rgba(255, 255, 255, 0.05);
+  --color-border-subtle: rgba(255, 255, 255, 0.06);
+  --color-border-medium: rgba(255, 255, 255, 0.1);
+  --color-input-bg: rgba(0, 0, 0, 0.35);
+  --color-drawer-bg: rgba(0, 0, 0, 0.6);
+  --color-gradient-mid: rgba(0, 0, 0, 0.6);
+  --color-gradient-end: rgba(0, 0, 0, 0.8);
 }
 
 /* Light Theme - Premium Luxury Hotel */
@@ -36,6 +46,16 @@
   --color-success: #3F8C5A;
   --color-danger: #B64545;
   --color-card-bg: rgba(255, 255, 255, 0.75);
+  --color-overlay-header: rgba(0, 0, 0, 0.03);
+  --color-overlay-card: rgba(0, 0, 0, 0.03);
+  --color-overlay-hover: rgba(0, 0, 0, 0.06);
+  --color-overlay-skeleton: rgba(0, 0, 0, 0.05);
+  --color-border-subtle: rgba(0, 0, 0, 0.06);
+  --color-border-medium: rgba(0, 0, 0, 0.1);
+  --color-input-bg: rgba(0, 0, 0, 0.04);
+  --color-drawer-bg: rgba(0, 0, 0, 0.45);
+  --color-gradient-mid: rgba(0, 0, 0, 0.35);
+  --color-gradient-end: rgba(0, 0, 0, 0.55);
 }
 
 @layer base {
@@ -201,4 +221,36 @@
 
 [data-theme="light"] .bg-white-10 {
   background-color: rgba(0, 0, 0, 0.06);
+}
+
+/* Theme-aware overlay utilities */
+.bg-overlay-header {
+  background-color: var(--color-overlay-header);
+}
+.bg-overlay-card {
+  background-color: var(--color-overlay-card);
+}
+.bg-overlay-hover {
+  background-color: var(--color-overlay-hover);
+}
+.bg-overlay-skeleton {
+  background-color: var(--color-overlay-skeleton);
+}
+.bg-input-theme {
+  background-color: var(--color-input-bg);
+}
+.bg-drawer-theme {
+  background-color: var(--color-drawer-bg);
+}
+.border-theme-subtle {
+  border-color: var(--color-border-subtle);
+}
+.border-theme-medium {
+  border-color: var(--color-border-medium);
+}
+.bg-gradient-mid {
+  background-color: var(--color-gradient-mid);
+}
+.bg-gradient-end {
+  background-color: var(--color-gradient-end);
 }

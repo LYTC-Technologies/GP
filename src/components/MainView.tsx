@@ -4,7 +4,6 @@ import { StayInfo, CartItem } from "../types";
 import VillaMiskLogo from "./VillaMiskLogo";
 import OffersCard from "./OffersCard";
 import PaymentsCard from "./PaymentsCard";
-import ThemeToggle from "./ThemeToggle";
 
 interface MainViewProps {
   stayInfo: StayInfo | null;
@@ -76,16 +75,16 @@ export default function MainView({
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-96 bg-gold-primary/5 blur-[120px] rounded-full pointer-events-none" />
 
       {/* Header Bar */}
-      <header className="relative z-20 px-4 sm:px-6 py-4 sm:py-6 border-b border-white/5 bg-luxury-black/40 backdrop-blur-md flex items-center justify-between">
+      <header className="relative z-20 px-4 sm:px-6 py-4 sm:py-6 border-b border-theme-subtle bg-overlay-header backdrop-blur-md flex items-center justify-between">
         {/* Left Side: Unified Single Button */}
         <div className="flex items-center">
           <button
             onClick={onOpenCart}
-            className="text-[10px] sm:text-[12px] tracking-wider text-gold-primary px-3 sm:px-5 py-2 sm:py-3 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-gold-primary/20 hover:border-gold-primary/45 transition-all duration-300 font-medium"
+            className="text-xs sm:text-sm tracking-wider text-gold-primary px-3 sm:px-5 py-2 sm:py-3 rounded-xl bg-overlay-card hover:bg-overlay-hover border border-gold-primary/20 hover:border-gold-primary/45 transition-all duration-300 font-semibold"
           >
             طلباتي
             {combinedTotalCount > 0 && (
-              <span className="mr-1 sm:mr-2 font-sans bg-gold-primary text-black px-1.5 sm:px-2 py-0.5 rounded-md text-[9px] sm:text-[10px] font-bold">
+              <span className="mr-1 sm:mr-2 font-sans bg-gold-primary text-black px-1.5 sm:px-2 py-0.5 rounded-md text-[10px] sm:text-[11px] font-bold">
                 {combinedTotalCount}
               </span>
             )}
@@ -94,16 +93,15 @@ export default function MainView({
 
         {/* Center: Miniature text logo */}
         <div className="flex flex-col items-center">
-          <span className="text-[10px] sm:text-xs tracking-[0.2em] sm:tracking-[0.3em] font-sans text-gold-primary font-light">VILLA MISK</span>
-          <span className="text-[7px] sm:text-[8px] text-gray-500 tracking-[0.15em] sm:tracking-[0.2em] hidden sm:block">PRIVATE PORTAL</span>
+          <span className="text-[10px] sm:text-xs tracking-[0.2em] sm:tracking-[0.3em] font-sans text-gold-primary font-semibold">VILLA MISK</span>
+          <span className="text-[8px] sm:text-[9px] text-gray-500 tracking-[0.15em] sm:tracking-[0.2em] hidden sm:block font-medium">PRIVATE PORTAL</span>
         </div>
 
-        {/* Right Side: Log Out & Theme Toggle */}
+        {/* Right Side: Log Out */}
         <div className="flex items-center gap-1 sm:gap-2">
-          <ThemeToggle />
           <button
             onClick={onLogout}
-            className="text-[10px] sm:text-xs px-2 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-white/5 hover:bg-red-500/10 border border-white/5 hover:border-red-500/20 text-gray-400 hover:text-red-400 transition-all duration-300"
+            className="text-xs sm:text-sm px-2 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-overlay-card hover:bg-red-500/10 border border-theme-subtle hover:border-red-500/20 text-gray-500 hover:text-red-400 transition-all duration-300 font-medium"
           >
             خروج
           </button>
@@ -118,7 +116,7 @@ export default function MainView({
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="mb-8 p-4 rounded-xl bg-white/[0.02] border border-white/5 flex justify-between items-center text-xs text-gray-400"
+            className="mb-8 p-4 rounded-xl bg-overlay-card border border-theme-subtle flex justify-between items-center text-sm text-gray-500 font-medium"
           >
             <div>
               <span>رقم الغرفة: {stayInfo.villaName.replace("جناح ", "")}</span>
@@ -162,7 +160,7 @@ export default function MainView({
               whileTap={{ scale: 0.98 }}
               onClick={() => card.target === "checkout" ? onCheckout() : onNavigate(card.target)}
               transition={{ delay: idx * 0.1, duration: 0.9, cubicBezier: [0.16, 1, 0.3, 1] }}
-              className="relative h-48 md:h-60 rounded-2xl overflow-hidden border border-white/5 hover:border-gold-primary/20 transition-all duration-500 shadow-xl bg-gradient-to-br from-gold-primary/10 via-luxury-black/60 to-luxury-black/80 cursor-pointer"
+              className="relative h-48 md:h-60 rounded-2xl overflow-hidden border border-theme-subtle hover:border-gold-primary/20 transition-all duration-500 shadow-xl bg-gradient-to-br from-gold-primary/10 via-overlay-card to-overlay-card cursor-pointer"
             >
               {/* Glowing gold line decoration */}
               <div className="absolute top-0 bottom-0 right-0 w-1.5 bg-gold-primary/40" />
@@ -173,7 +171,7 @@ export default function MainView({
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.1 + 0.3, duration: 0.6 }}
-                  className="text-xl md:text-2xl font-light text-primary"
+                  className="text-xl md:text-2xl font-semibold text-primary"
                 >
                   {card.title}
                 </motion.h3>
@@ -184,7 +182,7 @@ export default function MainView({
       </main>
 
       {/* Footer copyright */}
-      <footer className="py-6 text-center text-[10px] text-gray-600 font-sans tracking-widest relative z-10">
+      <footer className="py-6 text-center text-[11px] text-gray-500 font-semibold tracking-widest relative z-10">
         © 2026 VILLA MISK RESORTS. ALL RIGHTS RESERVED.
       </footer>
     </div>

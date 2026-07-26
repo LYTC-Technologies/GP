@@ -42,7 +42,7 @@ export default function WelcomeView({ guestName, onComplete }: WelcomeViewProps)
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 1.2, ease: "easeOut" }}
-            className="text-2xl md:text-3xl font-light text-primary tracking-wide leading-relaxed"
+            className="text-2xl md:text-3xl font-semibold text-primary tracking-wide leading-relaxed"
           >
             أهلاً بك في فيلا مسك
           </motion.h2>
@@ -51,7 +51,7 @@ export default function WelcomeView({ guestName, onComplete }: WelcomeViewProps)
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8, duration: 1.2, ease: "easeOut" }}
-            className="text-gold-primary text-sm tracking-[0.1em] font-light"
+            className="text-gold-primary text-sm tracking-[0.1em] font-semibold"
           >
             نتمنى لك إقامة فريدة ومميزة تليق بمقامك الكريــم
           </motion.p>
@@ -62,7 +62,7 @@ export default function WelcomeView({ guestName, onComplete }: WelcomeViewProps)
           initial={{ opacity: 0 }}
           animate={{ opacity: [0, 0.4, 0] }}
           transition={{ delay: 1.5, duration: 2.5, repeat: Infinity }}
-          className="absolute bottom-[-100px] text-[10px] tracking-[0.25em] text-gray-500 uppercase"
+          className="absolute bottom-[-100px] text-[11px] tracking-[0.25em] text-gray-500 uppercase font-medium"
         >
           انقر في أي مكان للتخطي
         </motion.div>

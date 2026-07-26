@@ -57,7 +57,7 @@ export default function LoginView({ onLoginSuccess }: LoginViewProps) {
       >
         <div 
           className={`glass-panel rounded-[24px] p-8 md:p-12 border transition-all duration-300 ${
-            shouldShake ? "animate-shake border-red-500/50 shadow-[0_0_25px_rgba(239,68,68,0.15)]" : "border-gold-primary/20 shadow-[0_20px_50px_rgba(0,0,0,0.8)]"
+            shouldShake ? "animate-shake border-red-500/50 shadow-[0_0_25px_rgba(239,68,68,0.15)]" : "border-gold-primary/20 shadow-[0_20px_50px_rgba(0,0,0,0.25)]"
           }`}
         >
           {/* Villa Misk Logo */}
@@ -65,10 +65,10 @@ export default function LoginView({ onLoginSuccess }: LoginViewProps) {
 
           {/* Titles */}
           <div className="text-center mb-8">
-            <h2 className="text-2xl md:text-3xl font-light text-primary tracking-wide mb-2">
+            <h2 className="text-2xl md:text-3xl font-semibold text-primary tracking-wide mb-2">
               مرحباً بك
             </h2>
-            <p className="text-xs tracking-wider text-gray-400">
+            <p className="text-sm tracking-wider text-gray-500 font-medium">
               يرجى إدخال رقم الجناح الخاص بك لتفعيل المساعد الرقمي
             </p>
           </div>
@@ -76,7 +76,7 @@ export default function LoginView({ onLoginSuccess }: LoginViewProps) {
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="room-number" className="block text-[10px] uppercase tracking-[0.2em] text-gold-primary mb-2 mr-1">
+              <label htmlFor="room-number" className="block text-xs uppercase tracking-[0.2em] text-gold-primary mb-2 mr-1 font-semibold">
                 رقم الغرفة
               </label>
               <input
@@ -89,7 +89,7 @@ export default function LoginView({ onLoginSuccess }: LoginViewProps) {
                 }}
                 disabled={isLoading}
                 placeholder="مثال: ١٠١"
-                className={`w-full bg-luxury-black/60 rounded-xl px-5 py-4 border text-center font-sans text-xl text-primary tracking-[0.1em] placeholder-gray-600 focus:outline-none transition-all duration-300 ${
+                className={`w-full bg-input-theme rounded-xl px-5 py-4 border text-center font-sans text-xl text-primary tracking-[0.1em] placeholder-gray-500 focus:outline-none transition-all duration-300 font-medium ${
                   error ? "border-red-500/40 focus:border-red-500/60" : "border-gold-primary/25 focus:border-gold-primary"
                 }`}
                 autoComplete="off"
@@ -101,7 +101,7 @@ export default function LoginView({ onLoginSuccess }: LoginViewProps) {
               <motion.p
                 initial={{ opacity: 0, y: -5 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="text-xs text-red-400 text-center mr-1"
+                className="text-sm text-red-400 text-center mr-1 font-medium"
               >
                 {error}
               </motion.p>
@@ -112,7 +112,7 @@ export default function LoginView({ onLoginSuccess }: LoginViewProps) {
               whileTap={{ scale: 0.98 }}
               type="submit"
               disabled={isLoading}
-              className="relative w-full btn-gold rounded-xl py-4 text-center text-sm tracking-[0.1em] font-medium overflow-hidden group disabled:opacity-50"
+              className="relative w-full btn-gold rounded-xl py-4 text-center text-sm tracking-[0.1em] font-semibold overflow-hidden group disabled:opacity-50"
             >
               {isLoading ? (
                 <div className="flex items-center justify-center space-x-2 space-x-reverse">
@@ -120,7 +120,7 @@ export default function LoginView({ onLoginSuccess }: LoginViewProps) {
                   <div className="h-0.5 w-16 bg-black/20 overflow-hidden relative">
                     <div className="absolute top-0 bottom-0 left-0 bg-black animate-[shimmer_1.5s_infinite]" style={{ width: '40%' }} />
                   </div>
-                  <span className="text-xs">جاري التحقق...</span>
+                  <span className="text-sm font-medium">جاري التحقق...</span>
                 </div>
               ) : (
                 "دخول"

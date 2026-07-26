@@ -1,7 +1,6 @@
 import React from "react";
 import { motion } from "motion/react";
 import { Product, CartItem } from "../types";
-import ThemeToggle from "./ThemeToggle";
 
 interface MenuItem {
   id: number;
@@ -58,31 +57,30 @@ export default function CategoryProductList({
   return (
     <div className="min-h-screen bg-luxury-bg flex flex-col justify-between overflow-x-hidden relative">
       {/* Top Header */}
-      <header className="relative z-20 px-6 py-6 border-b border-white/5 bg-luxury-black/40 backdrop-blur-md flex items-center justify-between">
+      <header className="relative z-20 px-6 py-6 border-b border-theme-subtle bg-overlay-header backdrop-blur-md flex items-center justify-between">
         {/* Back Button */}
         <button
           onClick={onBack}
-          className="text-xs text-gray-400 hover-text-primary transition-colors"
+          className="text-sm text-gray-500 hover:text-primary transition-colors font-medium"
         >
           الفئات ←
         </button>
 
         {/* Title */}
         <div className="text-center">
-          <h2 className="text-base font-light text-primary">{categoryNames[category]}</h2>
-          <p className="text-[9px] text-gold-primary tracking-widest font-sans uppercase">{category}</p>
+          <h2 className="text-base font-semibold text-primary">{categoryNames[category]}</h2>
+          <p className="text-[10px] text-gold-primary tracking-widest font-semibold uppercase">{category}</p>
         </div>
 
-        {/* Cart Trigger & Theme Toggle */}
+        {/* Cart Trigger */}
         <div className="flex items-center gap-2">
-          <ThemeToggle />
           <button
             onClick={onOpenCart}
-            className="text-xs text-gold-primary px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-300 font-medium"
+            className="text-sm text-gold-primary px-3 py-1.5 rounded-lg bg-overlay-card hover:bg-overlay-hover transition-all duration-300 font-semibold"
           >
             سلة الطلبات
             {totalCartItems > 0 && (
-              <span className="mr-1.5 font-sans bg-gold-primary text-black px-1.5 py-0.5 rounded text-[10px] font-bold">
+              <span className="mr-1.5 font-sans bg-gold-primary text-black px-1.5 py-0.5 rounded text-[11px] font-bold">
                 {totalCartItems}
               </span>
             )}
@@ -96,13 +94,13 @@ export default function CategoryProductList({
           /* Skeletons */
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="glass-panel p-4 rounded-3xl border border-white/5 space-y-4 animate-pulse">
-                <div className="w-full h-48 bg-white/5 rounded-2xl" />
-                <div className="h-4 bg-white/5 rounded w-3/4" />
-                <div className="h-3 bg-white/5 rounded w-1/2" />
+              <div key={i} className="glass-panel p-4 rounded-3xl border border-theme-subtle space-y-4 animate-pulse">
+                <div className="w-full h-48 bg-overlay-skeleton rounded-2xl" />
+                <div className="h-4 bg-overlay-skeleton rounded w-3/4" />
+                <div className="h-3 bg-overlay-skeleton rounded w-1/2" />
                 <div className="flex justify-between items-center pt-2">
-                  <div className="h-5 bg-white/5 rounded w-1/4" />
-                  <div className="h-8 bg-white/5 rounded-xl w-1/3" />
+                  <div className="h-5 bg-overlay-skeleton rounded w-1/4" />
+                  <div className="h-8 bg-overlay-skeleton rounded-xl w-1/3" />
                 </div>
               </div>
             ))}
@@ -110,7 +108,7 @@ export default function CategoryProductList({
         ) : filteredMenuItems.length === 0 ? (
           /* Empty State */
           <div className="text-center py-24 space-y-4">
-            <p className="text-gray-400 font-light">لا توجد منتجات متاحة في هذه الفئة حالياً</p>
+            <p className="text-gray-500 font-medium">لا توجد منتجات متاحة في هذه الفئة حالياً</p>
           </div>
         ) : (
           /* Products Grid */
@@ -130,7 +128,7 @@ export default function CategoryProductList({
                 >
                   {/* Tag badge for in-cart items count */}
                   {inCartCount > 0 && (
-                    <div className="absolute top-3 right-3 bg-gold-primary text-black text-[9px] font-sans font-bold px-2 py-1 rounded shadow-md">
+                    <div className="absolute top-3 right-3 bg-gold-primary text-black text-[10px] font-sans font-bold px-2 py-1 rounded shadow-md">
                       <span>{inCartCount} في السلة</span>
                     </div>
                   )}
@@ -138,14 +136,14 @@ export default function CategoryProductList({
                   {/* Title and descriptions */}
                   <div className="flex-1 flex flex-col justify-between space-y-3">
                     <div className="space-y-1">
-                      <h3 className="text-xs font-light text-primary group-hover:text-gold-primary transition-colors duration-300">
+                      <h3 className="text-sm font-semibold text-primary group-hover:text-gold-primary transition-colors duration-300">
                         {menuItem.name}
                       </h3>
                     </div>
 
                     {/* Pricing & Add Trigger */}
                     <div className="flex items-center justify-between pt-2">
-                      <span className="text-xs text-gold-primary font-sans font-medium tracking-wide">
+                      <span className="text-sm text-gold-primary font-sans font-semibold tracking-wide">
                         {formatPrice(menuItem.price)} ر.س
                       </span>
                       
@@ -159,7 +157,7 @@ export default function CategoryProductList({
                           description: "",
                           image: ""
                         })}
-                        className="btn-gold-outline rounded-xl px-3.5 py-1.5 text-[10px] tracking-wide font-medium"
+                        className="btn-gold-outline rounded-xl px-3.5 py-2 text-xs tracking-wide font-semibold"
                       >
                         + أضف للسلة
                       </motion.button>

@@ -17,7 +17,7 @@ interface PaymentsCardProps {
 export default function PaymentsCard({ stayDetails, isLoading, onClick }: PaymentsCardProps) {
   if (isLoading) {
     return (
-      <div className="relative h-48 md:h-60 rounded-2xl overflow-hidden border border-white/5 bg-luxury-black/40 animate-pulse" />
+      <div className="relative h-48 md:h-60 rounded-2xl overflow-hidden border border-theme-subtle bg-overlay-skeleton animate-pulse" />
     );
   }
 
@@ -30,7 +30,7 @@ export default function PaymentsCard({ stayDetails, isLoading, onClick }: Paymen
       whileTap={{ scale: 0.98 }}
       onClick={onClick}
       transition={{ duration: 0.9, cubicBezier: [0.16, 1, 0.3, 1] }}
-      className={`relative h-48 md:h-60 rounded-2xl overflow-hidden border border-white/5 hover:border-gold-primary/20 transition-all duration-500 shadow-xl bg-gradient-to-br from-gold-primary/10 via-luxury-black/60 to-luxury-black/80 ${onClick ? 'cursor-pointer' : ''}`}
+      className={`relative h-48 md:h-60 rounded-2xl overflow-hidden border border-theme-subtle hover:border-gold-primary/20 transition-all duration-500 shadow-xl bg-gradient-to-br from-gold-primary/10 via-overlay-card to-overlay-card ${onClick ? 'cursor-pointer' : ''}`}
     >
       {/* Glowing gold line decoration */}
       <div className="absolute top-0 bottom-0 right-0 w-1.5 bg-gold-primary/40" />

@@ -151,7 +151,7 @@ export default function CreateOrderModal({
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="p-6 border-b border-white/10 flex items-center justify-between">
+            <div className="p-6 border-b border-theme-medium flex items-center justify-between">
               <h2 className="text-xl font-light text-primary">إنشاء طلب جديد</h2>
               <button
                 onClick={onClose}
@@ -162,7 +162,7 @@ export default function CreateOrderModal({
             </div>
 
             {/* Category Selector */}
-            <div className="p-4 border-b border-white/10">
+            <div className="p-4 border-b border-theme-medium">
               <div className="flex gap-2">
                 {(["FOOD", "DRINK", "SERVICE"] as const).map((cat) => (
                   <button
@@ -171,7 +171,7 @@ export default function CreateOrderModal({
                     className={`px-4 py-2 rounded-lg transition-all ${
                       selectedCategory === cat
                         ? "bg-gold-primary text-black"
-                        : "bg-white/5 text-gray-400 hover:bg-white/10"
+                        : "bg-overlay-card text-gray-400 hover:bg-overlay-hover"
                     }`}
                   >
                     {getCategoryName(cat)}
@@ -191,7 +191,7 @@ export default function CreateOrderModal({
                   {menuItems.map((item) => (
                     <div
                       key={item.id}
-                      className="p-4 bg-white/5 rounded-xl border border-white/10 hover:border-gold-primary/30 transition-all"
+                      className="p-4 bg-overlay-card rounded-xl border border-theme-medium hover:border-gold-primary/30 transition-all"
                     >
                       <div className="flex justify-between items-start mb-2">
                         <div className="flex-1">
@@ -213,14 +213,14 @@ export default function CreateOrderModal({
 
             {/* Order Items Summary */}
             {orderItems.length > 0 && (
-              <div className="p-4 border-t border-white/10 bg-white/5">
+              <div className="p-4 border-t border-theme-medium bg-overlay-card">
                 <h3 className="text-primary font-light mb-3">العناصر المطلوبة</h3>
                 <div className="space-y-2 max-h-40 overflow-y-auto">
                   {orderItems.map((orderItem) => {
                     const menuItem = menuItems.find(m => m.id === orderItem.menuItemId);
                     if (!menuItem) return null;
                     return (
-                      <div key={orderItem.menuItemId} className="flex items-center gap-2 p-2 bg-white/5 rounded-lg">
+                      <div key={orderItem.menuItemId} className="flex items-center gap-2 p-2 bg-overlay-card rounded-lg">
                         <div className="flex-1">
                           <p className="text-primary text-sm">{menuItem.name}</p>
                           <input
@@ -228,20 +228,20 @@ export default function CreateOrderModal({
                             placeholder="ملاحظات..."
                             value={orderItem.notes || ""}
                             onChange={(e) => updateItemNotes(orderItem.menuItemId, e.target.value)}
-                            className="w-full mt-1 bg-transparent border border-white/10 rounded px-2 py-1 text-xs text-gray-400 focus:outline-none focus:border-gold-primary/30"
+                            className="w-full mt-1 bg-transparent border border-theme-medium rounded px-2 py-1 text-xs text-gray-400 focus:outline-none focus:border-gold-primary/30"
                           />
                         </div>
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => updateItemQuantity(orderItem.menuItemId, orderItem.quantity - 1)}
-                            className="w-6 h-6 bg-white/10 rounded flex items-center justify-center text-primary hover:bg-white/20"
+                            className="w-6 h-6 bg-overlay-hover rounded flex items-center justify-center text-primary hover:bg-overlay-hover"
                           >
                             -
                           </button>
                           <span className="text-primary w-6 text-center">{orderItem.quantity}</span>
                           <button
                             onClick={() => updateItemQuantity(orderItem.menuItemId, orderItem.quantity + 1)}
-                            className="w-6 h-6 bg-white/10 rounded flex items-center justify-center text-primary hover:bg-white/20"
+                            className="w-6 h-6 bg-overlay-hover rounded flex items-center justify-center text-primary hover:bg-overlay-hover"
                           >
                             +
                           </button>
@@ -254,10 +254,10 @@ export default function CreateOrderModal({
             )}
 
             {/* Footer */}
-            <div className="p-6 border-t border-white/10 flex justify-end gap-3">
+            <div className="p-6 border-t border-theme-medium flex justify-end gap-3">
               <button
                 onClick={onClose}
-                className="px-4 py-2 bg-white/5 text-gray-400 rounded-lg hover:bg-white/10 transition-all"
+                className="px-4 py-2 bg-overlay-card text-gray-400 rounded-lg hover:bg-overlay-hover transition-all"
               >
                 إلغاء
               </button>
