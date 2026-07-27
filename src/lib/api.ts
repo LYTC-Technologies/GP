@@ -1,4 +1,4 @@
-import { Product, Order, SpecialRequestCategory, SpecialRequest, StayInfo, GuestSession } from "../types";
+import { Order, SpecialRequestCategory, SpecialRequest, StayInfo, GuestSession } from "../types";
 
 const API_BASE_URL = "https://lytc-hotel-backend.onrender.com";
 
@@ -169,7 +169,7 @@ export const apiService = {
   // Get Special Request Categories
   async getSpecialRequestCategories(): Promise<SpecialRequestCategory[]> {
     await new Promise((resolve) => setTimeout(resolve, 200));
-    return [];
+    return specialRequestCategories;
   },
 
   // Submit Special Request (local storage)
