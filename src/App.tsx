@@ -249,9 +249,8 @@ function AppContent() {
 
   // Acknowledge completed order
   const handleAcknowledgeOrder = (orderId: string) => {
-    console.log("Order acknowledged:", orderId);
     // Could add logic to mark order as acknowledged or move it to payments
-    // For now, just log it
+    // For now, just acknowledge
   };
 
   // Remove order from invoice
