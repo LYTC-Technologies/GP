@@ -10,6 +10,7 @@ interface LoginViewProps {
 
 export default function LoginView({ onLoginSuccess }: LoginViewProps) {
   const [roomNumber, setRoomNumber] = useState("");
+  const [phone, setPhone] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [shouldShake, setShouldShake] = useState(false);
@@ -24,14 +25,20 @@ export default function LoginView({ onLoginSuccess }: LoginViewProps) {
       return;
     }
 
+    if (!phone.trim()) {
+      setError("يرجى كتابة رقم الهاتف أولاً");
+      triggerShake();
+      return;
+    }
+
     setIsLoading(true);
     setError("");
 
     try {
-      const session = await apiService.login(roomNumber);
+      const session = await apiService.login(roomNumber, phone);
       onLoginSuccess(session);
     } catch (err: any) {
-      setError(err.response?.data?.error || "رقم الغرفة غير صحيح. يرجى التحقق من الرقم والمحاولة مجدداً.");
+      setError(err.response?.data?.error || "بيانات الدخول غير صحيحة. يرجى التحقق والمحاولة مجدداً.");
       triggerShake();
     } finally {
       setIsLoading(false);
@@ -93,6 +100,26 @@ export default function LoginView({ onLoginSuccess }: LoginViewProps) {
                   error ? "border-red-500/40 focus:border-red-500/60" : "border-gold-primary/25 focus:border-gold-primary"
                 }`}
                 autoComplete="off"
+              />
+            </div>
+            <div>
+              <label htmlFor="phone" className="block text-xs uppercase tracking-[0.2em] text-gold-primary mb-2 mr-1 font-semibold">
+                رقم الهاتف
+              </label>
+              <input
+                id="phone"
+                type="tel"
+                value={phone}
+                onChange={(e) => {
+                  setPhone(e.target.value);
+                  setError("");
+                }}
+                disabled={isLoading}
+                placeholder="مثال: 0500000000"
+                className={`w-full bg-input-theme rounded-xl px-5 py-4 border text-center font-sans text-xl text-primary tracking-[0.1em] placeholder-gray-500 focus:outline-none transition-all duration-300 font-medium ${
+                  error ? "border-red-500/40 focus:border-red-500/60" : "border-gold-primary/25 focus:border-gold-primary"
+                }`}
+                autoComplete="tel"
               />
             </div>
 

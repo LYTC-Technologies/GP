@@ -55,4 +55,9 @@ export interface GuestSession {
   roomNumber: string;
   guestName: string;
   stayInfo: StayInfo;
+  token?: string;
+  stayId?: number;
+  guestId?: number;
+  expiresAt?: string;
+  tokenType?: string;
 }

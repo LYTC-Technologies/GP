@@ -133,14 +133,52 @@ function saveLocalRequests(requests: SpecialRequest[]) {
   localStorage.setItem("vms_special_requests_db", JSON.stringify(requests));
 }
 
+function getAuthToken(): string | null {
+  const session = localStorage.getItem("vms_session");
+  if (!session) return null;
+  try {
+    const parsed = JSON.parse(session);
+    return parsed.token || null;
+  } catch {
+    return null;
+  }
+}
+
+function getAuthHeaders(): HeadersInit {
+  const token = getAuthToken();
+  const headers: HeadersInit = {
+    "Content-Type": "application/json",
+  };
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+  return headers;
+}
+
 export const apiService = {
-  // Login with Room Number
-  async login(roomNumber: string): Promise<GuestSession> {
-    await new Promise((resolve) => setTimeout(resolve, 400));
-    if (!roomNumber || !isValidRoom(roomNumber)) {
-      throw new Error("رقم الغرفة غير صحيح. يرجى إدخال رقم غرفة صالح بين 100 و 999.");
+  // Login with Room Number and Phone
+  async login(roomNumber: string, phone: string): Promise<GuestSession> {
+    const url = `${API_BASE_URL}/api/guest/login`;
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        roomNumber,
+        phone,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || errorData.error || "بيانات الدخول غير صحيحة");
     }
 
+    const data = await response.json();
+
+    // Get real current date in Arabic format
     const now = new Date();
     const checkInDate = now.toLocaleDateString("ar-SA", {
       year: "numeric",
@@ -148,6 +186,7 @@ export const apiService = {
       day: "2-digit"
     });
 
+    // Calculate check-out date (7 days from now)
     const checkOutDate = new Date(now);
     checkOutDate.setDate(checkOutDate.getDate() + 7);
     const checkOutDateStr = checkOutDate.toLocaleDateString("ar-SA", {
@@ -157,8 +196,8 @@ export const apiService = {
     });
 
     return {
-      roomNumber,
-      guestName: "صاحب السمو والضيف الكريم",
+      roomNumber: data.roomNumber,
+      guestName: data.guestName,
       stayInfo: {
         villaName: `جناح فيلا مسك ${roomNumber}`,
         checkIn: checkInDate,
@@ -166,7 +205,12 @@ export const apiService = {
         butlerName: "ميخائيل",
         conciergeNumber: "+٩٦٦ ٥٠ ٠٠٠ ٠٠٠٠",
         capacity: "شخصين بالغين",
-      }
+      },
+      token: data.token,
+      stayId: data.stayId,
+      guestId: data.guestId,
+      expiresAt: data.expiresAt,
+      tokenType: data.tokenType,
     };
   },
 
@@ -186,7 +230,7 @@ export const apiService = {
     try {
       const response = await fetch(url.toString(), {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders(),
       });
 
       if (!response.ok) {
@@ -361,7 +405,7 @@ export const apiService = {
     try {
       const response = await fetch(url.toString(), {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders(),
       });
 
       if (!response.ok) {
@@ -431,7 +475,7 @@ export const apiService = {
     try {
       const response = await fetch(url.toString(), {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ category, items }),
       });
 
@@ -458,7 +502,7 @@ export const apiService = {
     try {
       const response = await fetch(url.toString(), {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders(),
       });
 
       if (!response.ok) {
@@ -508,7 +552,7 @@ export const apiService = {
     try {
       const response = await fetch(url.toString(), {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders(),
       });
 
       if (!response.ok) {

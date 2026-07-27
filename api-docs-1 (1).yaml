@@ -11,12 +11,6 @@ paths:
       tags:
       - guest-controller
       operationId: rateStay
-      parameters:
-      - name: roomNumber
-        in: query
-        required: true
-        schema:
-          type: string
       requestBody:
         content:
           application/json:
@@ -192,44 +186,6 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/EmployeeResponse"
-  /api/dashboard/front-desk/stays/{stayId}/checkout:
-    put:
-      tags:
-      - front-desk-controller
-      operationId: checkOut
-      parameters:
-      - name: stayId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
-      responses:
-        "200":
-          description: OK
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/StayDetailsResponse"
-  /api/dashboard/front-desk/stays/{stayId}/checkin:
-    put:
-      tags:
-      - front-desk-controller
-      operationId: checkInStay
-      parameters:
-      - name: stayId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
-      responses:
-        "200":
-          description: OK
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/StayDetailsResponse"
   /api/dashboard/front-desk/special-offers/{id}:
     put:
       tags:
@@ -383,11 +339,6 @@ paths:
       - guest-controller
       operationId: getOrderHistory
       parameters:
-      - name: roomNumber
-        in: query
-        required: true
-        schema:
-          type: string
       - name: pageable
         in: query
         required: true
@@ -404,12 +355,6 @@ paths:
       tags:
       - guest-controller
       operationId: createOrder
-      parameters:
-      - name: roomNumber
-        in: query
-        required: true
-        schema:
-          type: string
       requestBody:
         content:
           application/json:
@@ -422,7 +367,9 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/OrderResponse"
+                type: array
+                items:
+                  $ref: "#/components/schemas/OrderResponse"
   /api/guest/orders/{orderId}/cancel:
     post:
       tags:
@@ -435,11 +382,6 @@ paths:
         schema:
           type: integer
           format: int64
-      - name: roomNumber
-        in: query
-        required: true
-        schema:
-          type: string
       responses:
         "200":
           description: OK
@@ -447,6 +389,24 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/OrderResponse"
+  /api/guest/login:
+    post:
+      tags:
+      - guest-controller
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GuestLoginRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GuestLoginResponse"
   /api/dashboard/room-service/menu:
     post:
       tags:
@@ -621,6 +581,8 @@ paths:
           - RESERVED
           - ACTIVE
           - CLOSED
+          - CANCELLED
+          - NO_SHOW
       - name: pageable
         in: query
         required: true
@@ -688,6 +650,82 @@ paths:
             schema:
               $ref: "#/components/schemas/CreateSpecialOrderRequest"
         required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SpecialOrderResponse"
+  /api/dashboard/front-desk/stays/{stayId}/checkout:
+    post:
+      tags:
+      - front-desk-controller
+      operationId: checkOut
+      parameters:
+      - name: stayId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/StayDetailsResponse"
+  /api/dashboard/front-desk/stays/{stayId}/checkin:
+    post:
+      tags:
+      - front-desk-controller
+      operationId: checkInStay
+      parameters:
+      - name: stayId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/StayDetailsResponse"
+  /api/dashboard/front-desk/special-orders/{id}/complete:
+    post:
+      tags:
+      - front-desk-controller
+      operationId: completeSpecialOrder
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SpecialOrderResponse"
+  /api/dashboard/front-desk/special-orders/{id}/cancel:
+    post:
+      tags:
+      - front-desk-controller
+      operationId: cancelSpecialOrder
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
         "200":
           description: OK
@@ -818,7 +856,7 @@ paths:
     post:
       tags:
       - auth-controller
-      operationId: login
+      operationId: login_1
       requestBody:
         content:
           application/json:
@@ -832,6 +870,59 @@ paths:
             '*/*':
               schema:
                 type: object
+  /api/ai/ask:
+    post:
+      tags:
+      - ai-agent-controller
+      operationId: askAgent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AgentRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AgentResponse"
+  /api/admin/tenants:
+    get:
+      tags:
+      - tenant-admin-controller
+      operationId: getAllTenants
+      parameters:
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PageTenantResponse"
+    post:
+      tags:
+      - tenant-admin-controller
+      operationId: createNewHotel
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTenantRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TenantResponse"
   /api/dashboard/room-service/orders/{orderId}/status:
     patch:
       tags:
@@ -907,17 +998,47 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/OrderResponse"
+  /api/admin/tenants/{id}/deactivate:
+    patch:
+      tags:
+      - tenant-admin-controller
+      operationId: deactivateHotel
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TenantResponse"
+  /api/admin/tenants/{id}/activate:
+    patch:
+      tags:
+      - tenant-admin-controller
+      operationId: activateHotel
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TenantResponse"
   /api/guest/stays/special-orders:
     get:
       tags:
       - guest-controller
       operationId: getSpecialOrders
-      parameters:
-      - name: roomNumber
-        in: query
-        required: true
-        schema:
-          type: string
       responses:
         "200":
           description: OK
@@ -932,12 +1053,6 @@ paths:
       tags:
       - guest-controller
       operationId: getStayDetails
-      parameters:
-      - name: roomNumber
-        in: query
-        required: true
-        schema:
-          type: string
       responses:
         "200":
           description: OK
@@ -975,11 +1090,6 @@ paths:
         schema:
           type: integer
           format: int64
-      - name: roomNumber
-        in: query
-        required: true
-        schema:
-          type: string
       responses:
         "200":
           description: OK
@@ -1095,6 +1205,8 @@ paths:
           - RESERVED
           - ACTIVE
           - CLOSED
+          - CANCELLED
+          - NO_SHOW
       - name: pageable
         in: query
         required: true
@@ -1107,6 +1219,25 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/PageStayDetailsResponse"
+  /api/dashboard/manager/stays/{stayId}/summary:
+    get:
+      tags:
+      - manager-controller
+      operationId: getStaySummary
+      parameters:
+      - name: stayId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/FullStaySummaryResponse"
   /api/dashboard/manager/stays/rated:
     get:
       tags:
@@ -1166,9 +1297,26 @@ paths:
           content:
             '*/*':
               schema:
-                type: object
-                additionalProperties:
-                  type: object
+                $ref: "#/components/schemas/OccupancyResponse"
+  /api/dashboard/front-desk/stays/{stayId}/summary:
+    get:
+      tags:
+      - front-desk-controller
+      operationId: getStaySummary_1
+      parameters:
+      - name: stayId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/FullStaySummaryResponse"
   /api/dashboard/front-desk/stays/{stayId}/orders:
     get:
       tags:
@@ -1252,6 +1400,37 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/PendingOrdersResponse"
+  /api/admin/tenants/{id}:
+    get:
+      tags:
+      - tenant-admin-controller
+      operationId: getTenantById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TenantResponse"
+    delete:
+      tags:
+      - tenant-admin-controller
+      operationId: deleteHotel
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
   /api/dashboard/manager/vips/{id}:
     delete:
       tags:
@@ -1294,12 +1473,16 @@ components:
           minimum: 1
         notes:
           type: string
+      required:
+      - stars
     StayDetailsResponse:
       type: object
       properties:
         stayId:
           type: integer
           format: int64
+        expectedCheckInDate:
+          type: string
         checkInTime:
           type: string
         expectedCheckOutDate:
@@ -1351,6 +1534,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         description:
           type: string
         price:
@@ -1358,7 +1542,14 @@ components:
           minimum: 0.0
         available:
           type: boolean
+        category:
+          type: string
+          enum:
+          - FOOD
+          - DRINK
+          - SERVICE
       required:
+      - category
       - name
       - price
     MenuItemResponse:
@@ -1374,7 +1565,7 @@ components:
         category:
           type: string
         price:
-          type: string
+          type: number
         available:
           type: boolean
     UpdateUserRequest:
@@ -1382,13 +1573,13 @@ components:
       properties:
         username:
           type: string
+          minLength: 1
         password:
           type: string
-          maxLength: 2147483647
-          minLength: 8
         role:
           type: string
-          pattern: ^(ADMIN|MANAGER|STAFF|GUEST)$
+          minLength: 1
+          pattern: ^(MANAGER|CHEF|BARISTA|ROOM_SERVICE|STAFF)$
       required:
       - role
       - username
@@ -1407,6 +1598,9 @@ components:
       properties:
         status:
           type: string
+          enum:
+          - ACTIVE
+          - INACTIVE
       required:
       - status
     EmployeeResponse:
@@ -1430,8 +1624,11 @@ components:
       properties:
         title:
           type: string
+          minLength: 1
         description:
           type: string
+      required:
+      - title
     SpecialOfferResponse:
       type: object
       properties:
@@ -1447,6 +1644,7 @@ components:
       properties:
         roomNumber:
           type: string
+          minLength: 1
         maxAdults:
           type: integer
           format: int32
@@ -1464,6 +1662,8 @@ components:
           minimum: 0.0
         status:
           type: string
+          minLength: 1
+          pattern: ^(AVAILABLE|OCCUPIED|CLEANING|MAINTENANCE)$
       required:
       - price
       - roomNumber
@@ -1488,7 +1688,7 @@ components:
           type: integer
           format: int32
         price:
-          type: string
+          type: number
         description:
           type: string
     CreateOrderRequest:
@@ -1504,8 +1704,8 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/OrderItemRequest"
+          minItems: 1
       required:
-      - category
       - items
     OrderItemRequest:
       type: object
@@ -1536,7 +1736,7 @@ components:
           type: integer
           format: int32
         unitPrice:
-          type: string
+          type: number
         notes:
           type: string
     OrderResponse:
@@ -1552,7 +1752,7 @@ components:
         category:
           type: string
         totalAmount:
-          type: string
+          type: number
         status:
           type: string
         createdAt:
@@ -1563,11 +1763,44 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/OrderItemDetailResponse"
+    GuestLoginRequest:
+      type: object
+      properties:
+        roomNumber:
+          type: string
+          minLength: 1
+        phone:
+          type: string
+          minLength: 1
+      required:
+      - phone
+      - roomNumber
+    GuestLoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        roomNumber:
+          type: string
+        guestName:
+          type: string
+        stayId:
+          type: integer
+          format: int64
+        guestId:
+          type: integer
+          format: int64
+        expiresAt:
+          type: string
+          format: date-time
+        tokenType:
+          type: string
     CreateMenuItemRequest:
       type: object
       properties:
         name:
           type: string
+          minLength: 1
         description:
           type: string
         price:
@@ -1583,6 +1816,7 @@ components:
       properties:
         fullName:
           type: string
+          minLength: 1
         phone:
           type: string
         nationality:
@@ -1610,10 +1844,14 @@ components:
       properties:
         username:
           type: string
+          minLength: 1
         password:
           type: string
+          minLength: 1
         role:
           type: string
+          minLength: 1
+          pattern: ^(MANAGER|CHEF|BARISTA|ROOM_SERVICE|STAFF|GUEST)$
       required:
       - password
       - role
@@ -1623,12 +1861,16 @@ components:
       properties:
         fullName:
           type: string
+          minLength: 1
         phone:
           type: string
+          minLength: 1
         job:
           type: string
+          minLength: 1
         department:
           type: string
+          minLength: 1
       required:
       - department
       - fullName
@@ -1639,10 +1881,13 @@ components:
       properties:
         guestName:
           type: string
+          minLength: 1
         phone:
           type: string
+          minLength: 1
         roomNumber:
           type: string
+          minLength: 1
         numAdults:
           type: integer
           format: int32
@@ -1691,11 +1936,17 @@ components:
         createdAt:
           type: string
           format: date-time
+        status:
+          type: string
+        completedAt:
+          type: string
+          format: date-time
     CreateSpecialOfferRequest:
       type: object
       properties:
         title:
           type: string
+          minLength: 1
         description:
           type: string
       required:
@@ -1705,6 +1956,7 @@ components:
       properties:
         roomNumber:
           type: string
+          minLength: 1
         maxAdults:
           type: integer
           format: int32
@@ -1751,11 +2003,106 @@ components:
       required:
       - password
       - username
+    AgentRequest:
+      type: object
+      properties:
+        query:
+          type: string
+          minLength: 1
+      required:
+      - query
+    AgentResponse:
+      type: object
+      properties:
+        textSummary:
+          type: string
+        showGraph:
+          type: boolean
+        graph:
+          $ref: "#/components/schemas/GraphData"
+    GraphData:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - BAR
+          - PIE
+          - LINE
+        title:
+          type: string
+        labels:
+          type: array
+          items:
+            type: string
+        datasets:
+          type: array
+          items:
+            $ref: "#/components/schemas/GraphDataset"
+    GraphDataset:
+      type: object
+      properties:
+        label:
+          type: string
+        data:
+          type: array
+          items:
+            type: number
+            format: double
+    CreateTenantRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          maxLength: 50
+          minLength: 3
+          pattern: "^[a-z0-9_]+$"
+        name:
+          type: string
+          maxLength: 150
+          minLength: 2
+        schemaName:
+          type: string
+          maxLength: 50
+          minLength: 3
+          pattern: "^[a-z0-9_]+$"
+        managerUsername:
+          type: string
+          maxLength: 50
+          minLength: 3
+        managerPassword:
+          type: string
+          maxLength: 100
+          minLength: 6
+      required:
+      - id
+      - managerPassword
+      - managerUsername
+      - name
+      - schemaName
+    TenantResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        schemaName:
+          type: string
+        status:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
     UpdateOrderStatusRequest:
       type: object
       properties:
         status:
           type: string
+          enum:
+          - PENDING
+          - COMPLETED
+          - CANCELLED
       required:
       - status
     PatchMenuItemRequest:
@@ -1770,6 +2117,12 @@ components:
           minimum: 0.0
         available:
           type: boolean
+        category:
+          type: string
+          enum:
+          - FOOD
+          - DRINK
+          - SERVICE
     PatchSpecialOfferRequest:
       type: object
       properties:
@@ -1799,6 +2152,7 @@ components:
           minimum: 0.0
         status:
           type: string
+          pattern: ^(AVAILABLE|OCCUPIED|CLEANING|MAINTENANCE)$
     Pageable:
       type: object
       properties:
@@ -1817,12 +2171,12 @@ components:
     PageSpecialOfferResponse:
       type: object
       properties:
-        totalPages:
-          type: integer
-          format: int32
         totalElements:
           type: integer
           format: int64
+        totalPages:
+          type: integer
+          format: int32
         size:
           type: integer
           format: int32
@@ -1833,17 +2187,17 @@ components:
         number:
           type: integer
           format: int32
+        numberOfElements:
+          type: integer
+          format: int32
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
+        sort:
+          $ref: "#/components/schemas/SortObject"
         first:
           type: boolean
         last:
           type: boolean
-        numberOfElements:
-          type: integer
-          format: int32
-        sort:
-          $ref: "#/components/schemas/SortObject"
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
         empty:
           type: boolean
     PageableObject:
@@ -1852,18 +2206,18 @@ components:
         offset:
           type: integer
           format: int64
+        unpaged:
+          type: boolean
+        pageNumber:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
         paged:
           type: boolean
         sort:
           $ref: "#/components/schemas/SortObject"
-        pageSize:
-          type: integer
-          format: int32
-        pageNumber:
-          type: integer
-          format: int32
-        unpaged:
-          type: boolean
     SortObject:
       type: object
       properties:
@@ -1876,12 +2230,12 @@ components:
     PageOrderResponse:
       type: object
       properties:
-        totalPages:
-          type: integer
-          format: int32
         totalElements:
           type: integer
           format: int64
+        totalPages:
+          type: integer
+          format: int32
         size:
           type: integer
           format: int32
@@ -1892,28 +2246,28 @@ components:
         number:
           type: integer
           format: int32
+        numberOfElements:
+          type: integer
+          format: int32
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
+        sort:
+          $ref: "#/components/schemas/SortObject"
         first:
           type: boolean
         last:
           type: boolean
-        numberOfElements:
-          type: integer
-          format: int32
-        sort:
-          $ref: "#/components/schemas/SortObject"
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
         empty:
           type: boolean
     PageMenuItemResponse:
       type: object
       properties:
-        totalPages:
-          type: integer
-          format: int32
         totalElements:
           type: integer
           format: int64
+        totalPages:
+          type: integer
+          format: int32
         size:
           type: integer
           format: int32
@@ -1924,17 +2278,17 @@ components:
         number:
           type: integer
           format: int32
+        numberOfElements:
+          type: integer
+          format: int32
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
+        sort:
+          $ref: "#/components/schemas/SortObject"
         first:
           type: boolean
         last:
           type: boolean
-        numberOfElements:
-          type: integer
-          format: int32
-        sort:
-          $ref: "#/components/schemas/SortObject"
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
         empty:
           type: boolean
     SseEmitter:
@@ -1950,9 +2304,9 @@ components:
           type: integer
           format: int64
         totalRevenue:
-          type: string
+          type: number
         averageOrderValue:
-          type: string
+          type: number
         averagePreparationTimeMinutes:
           type: number
           format: double
@@ -1972,7 +2326,7 @@ components:
         category:
           type: string
         totalAmount:
-          type: string
+          type: number
         orderStatus:
           type: string
         createdAt:
@@ -1984,12 +2338,12 @@ components:
     PageVipResponse:
       type: object
       properties:
-        totalPages:
-          type: integer
-          format: int32
         totalElements:
           type: integer
           format: int64
+        totalPages:
+          type: integer
+          format: int32
         size:
           type: integer
           format: int32
@@ -2000,28 +2354,28 @@ components:
         number:
           type: integer
           format: int32
+        numberOfElements:
+          type: integer
+          format: int32
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
+        sort:
+          $ref: "#/components/schemas/SortObject"
         first:
           type: boolean
         last:
           type: boolean
-        numberOfElements:
-          type: integer
-          format: int32
-        sort:
-          $ref: "#/components/schemas/SortObject"
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
         empty:
           type: boolean
     PageUserResponse:
       type: object
       properties:
-        totalPages:
-          type: integer
-          format: int32
         totalElements:
           type: integer
           format: int64
+        totalPages:
+          type: integer
+          format: int32
         size:
           type: integer
           format: int32
@@ -2032,28 +2386,28 @@ components:
         number:
           type: integer
           format: int32
+        numberOfElements:
+          type: integer
+          format: int32
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
+        sort:
+          $ref: "#/components/schemas/SortObject"
         first:
           type: boolean
         last:
           type: boolean
-        numberOfElements:
-          type: integer
-          format: int32
-        sort:
-          $ref: "#/components/schemas/SortObject"
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
         empty:
           type: boolean
     PageStayDetailsResponse:
       type: object
       properties:
-        totalPages:
-          type: integer
-          format: int32
         totalElements:
           type: integer
           format: int64
+        totalPages:
+          type: integer
+          format: int32
         size:
           type: integer
           format: int32
@@ -2064,28 +2418,54 @@ components:
         number:
           type: integer
           format: int32
+        numberOfElements:
+          type: integer
+          format: int32
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
+        sort:
+          $ref: "#/components/schemas/SortObject"
         first:
           type: boolean
         last:
           type: boolean
-        numberOfElements:
-          type: integer
-          format: int32
-        sort:
-          $ref: "#/components/schemas/SortObject"
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
         empty:
           type: boolean
+    FinancialSummary:
+      type: object
+      properties:
+        roomCharge:
+          type: number
+        regularOrdersTotal:
+          type: number
+        specialOrdersTotal:
+          type: number
+        grandTotal:
+          type: number
+    FullStaySummaryResponse:
+      type: object
+      properties:
+        stayDetails:
+          $ref: "#/components/schemas/StayDetailsResponse"
+        financialSummary:
+          $ref: "#/components/schemas/FinancialSummary"
+        orders:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderResponse"
+        specialOrders:
+          type: array
+          items:
+            $ref: "#/components/schemas/SpecialOrderResponse"
     PageSpecialOrderResponse:
       type: object
       properties:
-        totalPages:
-          type: integer
-          format: int32
         totalElements:
           type: integer
           format: int64
+        totalPages:
+          type: integer
+          format: int32
         size:
           type: integer
           format: int32
@@ -2096,17 +2476,17 @@ components:
         number:
           type: integer
           format: int32
+        numberOfElements:
+          type: integer
+          format: int32
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
+        sort:
+          $ref: "#/components/schemas/SortObject"
         first:
           type: boolean
         last:
           type: boolean
-        numberOfElements:
-          type: integer
-          format: int32
-        sort:
-          $ref: "#/components/schemas/SortObject"
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
         empty:
           type: boolean
     ManagerOverviewResponse:
@@ -2119,7 +2499,12 @@ components:
           type: integer
           format: int64
         totalRevenueToday:
-          type: string
+          type: number
+        totalRevenue:
+          type: number
+        totalClosedStays:
+          type: integer
+          format: int64
         occupancyRate:
           type: number
           format: double
@@ -2129,15 +2514,29 @@ components:
         totalRooms:
           type: integer
           format: int64
+    OccupancyResponse:
+      type: object
+      properties:
+        totalRooms:
+          type: integer
+          format: int64
+        occupiedRooms:
+          type: integer
+          format: int64
+        availableRooms:
+          type: integer
+          format: int64
+        occupancyRate:
+          type: number
     PageEmployeeResponse:
       type: object
       properties:
-        totalPages:
-          type: integer
-          format: int32
         totalElements:
           type: integer
           format: int64
+        totalPages:
+          type: integer
+          format: int32
         size:
           type: integer
           format: int32
@@ -2148,28 +2547,28 @@ components:
         number:
           type: integer
           format: int32
+        numberOfElements:
+          type: integer
+          format: int32
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
+        sort:
+          $ref: "#/components/schemas/SortObject"
         first:
           type: boolean
         last:
           type: boolean
-        numberOfElements:
-          type: integer
-          format: int32
-        sort:
-          $ref: "#/components/schemas/SortObject"
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
         empty:
           type: boolean
     PageRoomResponse:
       type: object
       properties:
-        totalPages:
-          type: integer
-          format: int32
         totalElements:
           type: integer
           format: int64
+        totalPages:
+          type: integer
+          format: int32
         size:
           type: integer
           format: int32
@@ -2180,16 +2579,48 @@ components:
         number:
           type: integer
           format: int32
+        numberOfElements:
+          type: integer
+          format: int32
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
+        sort:
+          $ref: "#/components/schemas/SortObject"
         first:
           type: boolean
         last:
           type: boolean
+        empty:
+          type: boolean
+    PageTenantResponse:
+      type: object
+      properties:
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/TenantResponse"
+        number:
+          type: integer
+          format: int32
         numberOfElements:
           type: integer
           format: int32
-        sort:
-          $ref: "#/components/schemas/SortObject"
         pageable:
           $ref: "#/components/schemas/PageableObject"
+        sort:
+          $ref: "#/components/schemas/SortObject"
+        first:
+          type: boolean
+        last:
+          type: boolean
         empty:
           type: boolean
