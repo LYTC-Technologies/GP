@@ -43,6 +43,7 @@ function getAuthHeaders(): HeadersInit {
   const token = getAuthToken();
   const headers: HeadersInit = {
     "Content-Type": "application/json",
+    "X-Tenant-ID": "hotel1",
   };
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
@@ -59,6 +60,7 @@ export const apiService = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "X-Tenant-ID": "hotel1",
       },
       body: JSON.stringify({
         roomNumber,
@@ -210,7 +212,10 @@ export const apiService = {
     try {
       const response = await fetch(url.toString(), {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "X-Tenant-ID": "hotel1",
+        },
       });
 
       if (!response.ok) {
@@ -243,7 +248,10 @@ export const apiService = {
     try {
       const response = await fetch(url.toString(), {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "X-Tenant-ID": "hotel1",
+        },
       });
 
       if (!response.ok) {
@@ -271,7 +279,10 @@ export const apiService = {
     try {
       const response = await fetch(url.toString(), {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "X-Tenant-ID": "hotel1",
+        },
       });
 
       if (!response.ok) {
@@ -327,7 +338,10 @@ export const apiService = {
     try {
       const response = await fetch(url.toString(), {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "X-Tenant-ID": "hotel1",
+        },
       });
 
       if (!response.ok) {
@@ -420,7 +434,10 @@ export const apiService = {
     try {
       const response = await fetch(url.toString(), {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "X-Tenant-ID": "hotel1",
+        },
         body: JSON.stringify({
           stars,
           notes: notes || "",
